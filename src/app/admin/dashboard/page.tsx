@@ -81,7 +81,7 @@ export default function AdminDashboard() {
     const params = new URLSearchParams();
     if (startDate) params.set("start", startDate);
     if (endDate) params.set("end", endDate);
-    const res = await fetch(`/api/admin/punches?${params}`);
+    const res = await fetch(`/time/api/admin/punches?${params}`);
     if (res.ok) {
       const data = await res.json();
       setPunches(data.punches || []);
@@ -89,7 +89,7 @@ export default function AdminDashboard() {
   }, [startDate, endDate]);
 
   const fetchTickets = useCallback(async () => {
-    const res = await fetch("/api/admin/tickets");
+    const res = await fetch("/time/api/admin/tickets");
     if (res.ok) {
       const data = await res.json();
       setTickets(data.tickets || []);
@@ -100,7 +100,7 @@ export default function AdminDashboard() {
     const params = new URLSearchParams();
     if (startDate) params.set("start", startDate);
     if (endDate) params.set("end", endDate);
-    const res = await fetch(`/api/admin/reports?${params}`);
+    const res = await fetch(`/time/api/admin/reports?${params}`);
     if (res.ok) {
       const data = await res.json();
       setReports(data.reports || []);
@@ -114,12 +114,12 @@ export default function AdminDashboard() {
   }, [fetchPunches, fetchTickets, fetchReports]);
 
   async function handleLogout() {
-    await fetch("/api/admin/auth", { method: "DELETE" });
+    await fetch("/time/api/admin/auth", { method: "DELETE" });
     router.push("/admin/login");
   }
 
   async function handleEditPunch(id: string) {
-    const res = await fetch("/api/admin/punches", {
+    const res = await fetch("/time/api/admin/punches", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, timestamp: editTime }),
@@ -131,7 +131,7 @@ export default function AdminDashboard() {
   }
 
   async function handleTicketStatus(id: string, status: string) {
-    const res = await fetch("/api/admin/tickets", {
+    const res = await fetch("/time/api/admin/tickets", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, status }),
@@ -143,11 +143,11 @@ export default function AdminDashboard() {
     const params = new URLSearchParams();
     if (startDate) params.set("start", startDate);
     if (endDate) params.set("end", endDate);
-    window.open(`/api/admin/export?${params}`, "_blank");
+    window.open(`/time/api/admin/export?${params}`, "_blank");
   }
 
   async function viewReport(id: string) {
-    const res = await fetch(`/api/admin/reports?id=${id}`);
+    const res = await fetch(`/time/api/admin/reports?id=${id}`);
     if (res.ok) {
       const data = await res.json();
       setSelectedReport(data);
@@ -162,7 +162,7 @@ export default function AdminDashboard() {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
           <div className="flex gap-3">
-            <a href="/admin/employees" className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 rounded text-sm">
+            <a href="/time/admin/employees" className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 rounded text-sm">
               Manage Employees
             </a>
             <button onClick={handleLogout} className="px-3 py-1.5 bg-red-700 hover:bg-red-600 rounded text-sm">
@@ -390,7 +390,7 @@ export default function AdminDashboard() {
                 <div className="space-y-1">
                   {selectedReport.crew.map((c) => (
                     <div key={c.id} className="flex justify-between text-sm bg-gray-900 p-2 rounded">
-                      <span>{c.employees?.name || "Unknown"} — {c.role_on_site}</span>
+                      <span>{c.employees?.name || "Unknown"} â {c.role_on_site}</span>
                       <span>{c.hours_regular}h reg {c.hours_overtime > 0 && `+ ${c.hours_overtime}h OT`}</span>
                     </div>
                   ))}
@@ -405,7 +405,7 @@ export default function AdminDashboard() {
                 <div className="space-y-1">
                   {selectedReport.equipment.map((e) => (
                     <div key={e.id} className="text-sm bg-gray-900 p-2 rounded">
-                      {e.equipment_name} {e.equipment_id_number && `(#${e.equipment_id_number})`} — {e.hours_used}h — Op: {e.operator_name}
+                      {e.equipment_name} {e.equipment_id_number && `(#${e.equipment_id_number})`} â {e.hours_used}h â Op: {e.operator_name}
                       {e.equipment_issues && <span className="text-yellow-400 ml-2">Issue: {e.equipment_issues}</span>}
                     </div>
                   ))}
@@ -420,7 +420,7 @@ export default function AdminDashboard() {
                 <div className="space-y-1">
                   {selectedReport.materials.map((m) => (
                     <div key={m.id} className="text-sm bg-gray-900 p-2 rounded">
-                      {m.material_description} — {m.quantity} {m.unit} {m.supplier && `from ${m.supplier}`}
+                      {m.material_description} â {m.quantity} {m.unit} {m.supplier && `from ${m.supplier}`}
                     </div>
                   ))}
                 </div>
@@ -434,7 +434,7 @@ export default function AdminDashboard() {
                 <div className="space-y-1">
                   {selectedReport.subcontractors.map((s) => (
                     <div key={s.id} className="text-sm bg-gray-900 p-2 rounded">
-                      {s.company_name} ({s.trade}) — {s.worker_count} workers — {s.work_description}
+                      {s.company_name} ({s.trade}) â {s.worker_count} workers â {s.work_description}
                     </div>
                   ))}
                 </div>
