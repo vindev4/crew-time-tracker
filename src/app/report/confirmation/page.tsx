@@ -22,7 +22,7 @@ function ConfirmationContent() {
         <p className="text-gray-400 text-sm">{project}</p>
         <p className="text-gray-400 text-sm">{date}</p>
         <a
-          href="/"
+          href="/time/"
           className="mt-6 inline-block w-full max-w-xs py-3 bg-blue-600 hover:bg-blue-700 rounded font-medium transition-colors"
         >
           Done
