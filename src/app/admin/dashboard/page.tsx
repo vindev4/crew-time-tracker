@@ -270,18 +270,18 @@ export default function AdminDashboard() {
                     <td className="p-3">{t.employees?.name}</td>
                     <td className="p-3 max-w-xs truncate">{t.notes}</td>
                     <td className="p-3">
-                      <span className={`px-2 py-0.5 rounded text-xs ${t.status === "open" ? "bg-yellow-900 text-yellow-300" : t.status === "reviewed" ? "bg-blue-900 text-blue-300" : "bg-gray-600 text-gray-300"}`}>
+                      <span className={`px-2 py-0.5 rounded text-xs ${t.status === "open" ? "bg-yellow-900 text-yellow-300" : t.status === "in_progress" ? "bg-blue-900 text-blue-300" : "bg-gray-600 text-gray-300"}`}>
                         {t.status}
                       </span>
                     </td>
-                    <td className="p-3 text-xs">{new Date(t.created_at).toLocaleDateString()}</td>
+                    <td className="p-3 text-xs">{new Date(t.submitted_at).toLocaleDateString()}</td>
                     <td className="p-3">
                       <div className="flex gap-1">
                         {t.status === "open" && (
-                          <button onClick={() => handleTicketStatus(t.id, "reviewed")} className="px-2 py-0.5 bg-blue-600 rounded text-xs">Mark Reviewed</button>
+                          <button onClick={() => handleTicketStatus(t.id, "in_progress")} className="px-2 py-0.5 bg-blue-600 rounded text-xs">Mark Reviewed</button>
                         )}
-                        {t.status !== "closed" && (
-                          <button onClick={() => handleTicketStatus(t.id, "closed")} className="px-2 py-0.5 bg-gray-600 rounded text-xs">Close</button>
+                        {t.status !== "resolved" && (
+                          <button onClick={() => handleTicketStatus(t.id, "resolved")} className="px-2 py-0.5 bg-gray-600 rounded text-xs">Close</button>
                         )}
                       </div>
                     </td>
@@ -390,7 +390,7 @@ export default function AdminDashboard() {
                 <div className="space-y-1">
                   {selectedReport.crew.map((c) => (
                     <div key={c.id} className="flex justify-between text-sm bg-gray-900 p-2 rounded">
-                      <span>{c.employees?.name || "Unknown"} â {c.role_on_site}</span>
+                      <span>{c.employees?.name || "Unknown"} Ã¢ÂÂ {c.role_on_site}</span>
                       <span>{c.hours_regular}h reg {c.hours_overtime > 0 && `+ ${c.hours_overtime}h OT`}</span>
                     </div>
                   ))}
@@ -405,7 +405,7 @@ export default function AdminDashboard() {
                 <div className="space-y-1">
                   {selectedReport.equipment.map((e) => (
                     <div key={e.id} className="text-sm bg-gray-900 p-2 rounded">
-                      {e.equipment_name} {e.equipment_id_number && `(#${e.equipment_id_number})`} â {e.hours_used}h â Op: {e.operator_name}
+                      {e.equipment_name} {e.equipment_id_number && `(#${e.equipment_id_number})`} Ã¢ÂÂ {e.hours_used}h Ã¢ÂÂ Op: {e.operator_name}
                       {e.equipment_issues && <span className="text-yellow-400 ml-2">Issue: {e.equipment_issues}</span>}
                     </div>
                   ))}
@@ -420,7 +420,7 @@ export default function AdminDashboard() {
                 <div className="space-y-1">
                   {selectedReport.materials.map((m) => (
                     <div key={m.id} className="text-sm bg-gray-900 p-2 rounded">
-                      {m.material_description} â {m.quantity} {m.unit} {m.supplier && `from ${m.supplier}`}
+                      {m.material_description} Ã¢ÂÂ {m.quantity} {m.unit} {m.supplier && `from ${m.supplier}`}
                     </div>
                   ))}
                 </div>
@@ -434,7 +434,7 @@ export default function AdminDashboard() {
                 <div className="space-y-1">
                   {selectedReport.subcontractors.map((s) => (
                     <div key={s.id} className="text-sm bg-gray-900 p-2 rounded">
-                      {s.company_name} ({s.trade}) â {s.worker_count} workers â {s.work_description}
+                      {s.company_name} ({s.trade}) Ã¢ÂÂ {s.worker_count} workers Ã¢ÂÂ {s.work_description}
                     </div>
                   ))}
                 </div>
