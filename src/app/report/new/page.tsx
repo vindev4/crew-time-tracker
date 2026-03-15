@@ -149,22 +149,22 @@ export default function DailyReportPage() {
 
   // Crew helpers
   function addCrewRow() { setCrew([...crew, { employee_id: "", hours_regular: 8, hours_overtime: 0, role_on_site: "" }]); }
-  function updateCrew(i: number, field: string, value: string | number) { const u = [...crew]; (u[i] as Record<string, unknown>)[field] = value; setCrew(u); }
+  function updateCrew(i: number, field: string, value: string | number) { const u = [...crew]; (u[i] as unknown as Record<string, unknown>)[field] = value; setCrew(u); }
   function removeCrew(i: number) { setCrew(crew.filter((_, idx) => idx !== i)); }
 
   // Equipment helpers
   function addEquipment() { setEquipment([...equipment, { equipment_name: "", equipment_id_number: "", hours_used: 0, operator_name: "", equipment_issues: "" }]); }
-  function updateEquipment(i: number, field: string, value: string | number) { const u = [...equipment]; (u[i] as Record<string, unknown>)[field] = value; setEquipment(u); }
+  function updateEquipment(i: number, field: string, value: string | number) { const u = [...equipment]; (u[i] as unknown as Record<string, unknown>)[field] = value; setEquipment(u); }
   function removeEquipment(i: number) { setEquipment(equipment.filter((_, idx) => idx !== i)); }
 
   // Material helpers
   function addMaterial() { setMaterials([...materials, { material_description: "", quantity: 0, unit: "each", supplier: "" }]); }
-  function updateMaterial(i: number, field: string, value: string | number) { const u = [...materials]; (u[i] as Record<string, unknown>)[field] = value; setMaterials(u); }
+  function updateMaterial(i: number, field: string, value: string | number) { const u = [...materials]; (u[i] as unknown as Record<string, unknown>)[field] = value; setMaterials(u); }
   function removeMaterial(i: number) { setMaterials(materials.filter((_, idx) => idx !== i)); }
 
   // Sub helpers
   function addSub() { setSubs([...subs, { company_name: "", trade: "", worker_count: 0, work_description: "" }]); }
-  function updateSub(i: number, field: string, value: string | number) { const u = [...subs]; (u[i] as Record<string, unknown>)[field] = value; setSubs(u); }
+  function updateSub(i: number, field: string, value: string | number) { const u = [...subs]; (u[i] as unknown as Record<string, unknown>)[field] = value; setSubs(u); }
   function removeSub(i: number) { setSubs(subs.filter((_, idx) => idx !== i)); }
 
   // Photo helpers
