@@ -18,7 +18,7 @@ function TicketContent() {
     setLoading(true);
     setError("");
     try {
-      const res = await fetch("/api/tickets", {
+      const res = await fetch("/time/api/tickets", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ employee_id: eid, pin, notes: notes.trim() }),
@@ -37,7 +37,7 @@ function TicketContent() {
           <p className="text-gray-400 mb-6">Your work ticket has been submitted successfully.</p>
           <div className="flex gap-3">
             <button onClick={() => setSuccess(false)} className="bg-gray-700 hover:bg-gray-600 px-6 py-3 rounded-lg">Submit Another</button>
-            <a href="/" className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg">Done</a>
+            <a href="/time/" className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg">Done</a>
           </div>
         </div>
       </div>
@@ -49,7 +49,7 @@ function TicketContent() {
       <div className="max-w-lg mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold">Submit Work Ticket</h1>
-          <a href="/" className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm">Back</a>
+          <a href="/time/" className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm">Back</a>
         </div>
         <form onSubmit={handleSubmit} className="bg-gray-800 rounded-xl p-6">
           {error && (<div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-4">{error}</div>)}
