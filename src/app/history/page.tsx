@@ -25,7 +25,7 @@ function HistoryContent() {
     async function fetchHistory() {
       try {
         // First authenticate to get the UUID
-        const authRes = await fetch("/api/auth", {
+        const authRes = await fetch("/time/api/auth", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ employee_id: eid, pin }),
@@ -85,7 +85,7 @@ function HistoryContent() {
             )}
           </div>
           <a
-            href="/"
+            href="/time/"
             className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm"
           >
             Back
@@ -125,7 +125,7 @@ function HistoryContent() {
                 <span
                   className={`text-xs ${punch.gps_available ? "text-green-400" : "text-gray-500"}`}
                 >
-                  {punch.gps_available ? "📍" : "—"}
+                  {punch.gps_available ? "ð" : "â"}
                 </span>
               </div>
             ))}
