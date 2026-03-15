@@ -20,7 +20,7 @@ function ConfirmationContent() {
         <div
           className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 ${type === "clock_in" ? "bg-green-600" : "bg-red-600"}`}
         >
-          <span className="text-4xl">{type === "clock_in" ? "✓" : "✗"}</span>
+          <span className="text-4xl">{type === "clock_in" ? "â" : "â"}</span>
         </div>
 
         <h1 className="text-2xl font-bold mb-2">
@@ -32,13 +32,13 @@ function ConfirmationContent() {
 
         <div className="bg-gray-800 rounded-lg p-3 mb-6 inline-block">
           <span className={`text-sm ${gps ? "text-green-400" : "text-yellow-400"}`}>
-            {gps ? "📍 GPS Location Recorded" : "⚠️ GPS Not Available"}
+            {gps ? "ð GPS Location Recorded" : "â ï¸ GPS Not Available"}
           </span>
         </div>
 
         <div>
           <a
-            href="/"
+            href="/time/"
             className="block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
           >
             Done
