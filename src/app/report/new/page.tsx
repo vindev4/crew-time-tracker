@@ -139,7 +139,8 @@ export default function DailyReportPage() {
 
   function updateCrew(i: number, field: string, value: string | number) {
     const updated = [...crew];
-    (updated[i] as Record<string, string | number>)[field] = value;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (updated[i] as any)[field] = value;
     setCrew(updated);
   }
 
@@ -153,7 +154,8 @@ export default function DailyReportPage() {
 
   function updateEquipment(i: number, field: string, value: string | number) {
     const updated = [...equipment];
-    (updated[i] as Record<string, string | number>)[field] = value;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (updated[i] as any)[field] = value;
     setEquipment(updated);
   }
 
@@ -167,7 +169,8 @@ export default function DailyReportPage() {
 
   function updateMaterial(i: number, field: string, value: string | number) {
     const updated = [...materials];
-    (updated[i] as Record<string, string | number>)[field] = value;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (updated[i] as any)[field] = value;
     setMaterials(updated);
   }
 
@@ -181,7 +184,8 @@ export default function DailyReportPage() {
 
   function updateSub(i: number, field: string, value: string | number) {
     const updated = [...subs];
-    (updated[i] as Record<string, string | number>)[field] = value;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (updated[i] as any)[field] = value;
     setSubs(updated);
   }
 
