@@ -390,7 +390,7 @@ export default function AdminDashboard() {
                 <div className="space-y-1">
                   {selectedReport.crew.map((c) => (
                     <div key={c.id} className="flex justify-between text-sm bg-gray-900 p-2 rounded">
-                      <span>{c.employees?.name || "Unknown"} ÃÂ¢ÃÂÃÂ {c.role_on_site}</span>
+                      <span>{c.employees?.name || "Unknown"} — {c.role_on_site}</span>
                       <span>{c.hours_regular}h reg {c.hours_overtime > 0 && `+ ${c.hours_overtime}h OT`}</span>
                     </div>
                   ))}
@@ -405,7 +405,7 @@ export default function AdminDashboard() {
                 <div className="space-y-1">
                   {selectedReport.equipment.map((e) => (
                     <div key={e.id} className="text-sm bg-gray-900 p-2 rounded">
-                      {e.equipment_name} {e.equipment_id_number && `(#${e.equipment_id_number})`} ÃÂ¢ÃÂÃÂ {e.hours_used}h ÃÂ¢ÃÂÃÂ Op: {e.operator_name}
+                      {e.equipment_name} {e.equipment_id_number && `(#${e.equipment_id_number})`} — {e.hours_used}h — Op: {e.operator_name}
                       {e.equipment_issues && <span className="text-yellow-400 ml-2">Issue: {e.equipment_issues}</span>}
                     </div>
                   ))}
@@ -420,7 +420,7 @@ export default function AdminDashboard() {
                 <div className="space-y-1">
                   {selectedReport.materials.map((m) => (
                     <div key={m.id} className="text-sm bg-gray-900 p-2 rounded">
-                      {m.material_description} ÃÂ¢ÃÂÃÂ {m.quantity} {m.unit} {m.supplier && `from ${m.supplier}`}
+                      {m.material_description} — {m.quantity} {m.unit} {m.supplier && `from ${m.supplier}`}
                     </div>
                   ))}
                 </div>
@@ -434,7 +434,7 @@ export default function AdminDashboard() {
                 <div className="space-y-1">
                   {selectedReport.subcontractors.map((s) => (
                     <div key={s.id} className="text-sm bg-gray-900 p-2 rounded">
-                      {s.company_name} ({s.trade}) ÃÂ¢ÃÂÃÂ {s.worker_count} workers ÃÂ¢ÃÂÃÂ {s.work_description}
+                      {s.company_name} ({s.trade}) — {s.worker_count} workers — {s.work_description}
                     </div>
                   ))}
                 </div>
