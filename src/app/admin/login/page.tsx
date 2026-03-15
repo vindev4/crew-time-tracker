@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -12,24 +11,19 @@ export default function AdminLoginPage() {
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
-
     if (!username || !password) {
       setError("Enter username and password");
       return;
     }
-
     setLoading(true);
     setError("");
-
     try {
-      const res = await fetch("/api/admin/auth", {
+      const res = await fetch("/time/api/admin/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
-
       const data = await res.json();
-
       if (res.ok) {
         router.push("/admin/dashboard");
       } else {
@@ -56,11 +50,8 @@ export default function AdminLoginPage() {
               {error}
             </div>
           )}
-
           <div className="mb-4">
-            <label className="block text-sm text-gray-400 mb-1">
-              Username
-            </label>
+            <label className="block text-sm text-gray-400 mb-1">Username</label>
             <input
               type="text"
               value={username}
@@ -69,11 +60,8 @@ export default function AdminLoginPage() {
               disabled={loading}
             />
           </div>
-
           <div className="mb-6">
-            <label className="block text-sm text-gray-400 mb-1">
-              Password
-            </label>
+            <label className="block text-sm text-gray-400 mb-1">Password</label>
             <input
               type="password"
               value={password}
@@ -82,7 +70,6 @@ export default function AdminLoginPage() {
               disabled={loading}
             />
           </div>
-
           <button
             type="submit"
             disabled={loading}
@@ -91,9 +78,8 @@ export default function AdminLoginPage() {
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
-
         <div className="text-center mt-4">
-          <a href="/" className="text-gray-500 text-sm hover:text-gray-400">
+          <a href="/time/" className="text-gray-500 text-sm hover:text-gray-400">
             Back to Clock In
           </a>
         </div>
