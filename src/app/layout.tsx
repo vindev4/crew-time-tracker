@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { I18nProvider } from "@/lib/i18n";
 
 export const metadata: Metadata = {
   title: "Crew Time Tracker",
@@ -13,7 +14,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="bg-gray-900 text-white min-h-screen">{children}</body>
+      <body>
+        <I18nProvider>
+          {children}
+        </I18nProvider>
+      </body>
     </html>
   );
 }
