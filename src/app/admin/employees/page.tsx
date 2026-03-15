@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -29,7 +28,7 @@ export default function EmployeesPage() {
   }, []);
 
   async function fetchEmployees() {
-    const res = await fetch("/api/admin/employees");
+    const res = await fetch("/time/api/admin/employees");
     if (res.status === 401) {
       router.push("/admin/login");
       return;
@@ -43,13 +42,11 @@ export default function EmployeesPage() {
     e.preventDefault();
     setError("");
     setSuccess("");
-
     if (!newEmpId || !newName || !newPin) {
       setError("All fields are required");
       return;
     }
-
-    const res = await fetch("/api/admin/employees", {
+    const res = await fetch("/time/api/admin/employees", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -59,9 +56,7 @@ export default function EmployeesPage() {
         role: newRole,
       }),
     });
-
     const data = await res.json();
-
     if (res.ok) {
       setSuccess(`Added ${newName} (ID: ${newEmpId})`);
       setNewEmpId("");
@@ -76,7 +71,7 @@ export default function EmployeesPage() {
   }
 
   async function toggleActive(emp: Employee) {
-    await fetch("/api/admin/employees", {
+    await fetch("/time/api/admin/employees", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: emp.id, active: !emp.active }),
@@ -97,7 +92,7 @@ export default function EmployeesPage() {
               {showAdd ? "Cancel" : "+ Add Employee"}
             </button>
             <a
-              href="/admin/dashboard"
+              href="/time/admin/dashboard"
               className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm"
             >
               Back to Dashboard
@@ -204,7 +199,9 @@ export default function EmployeesPage() {
                 {employees.map((emp) => (
                   <tr
                     key={emp.id}
-                    className={`border-b border-gray-700/50 ${!emp.active ? "opacity-50" : ""}`}
+                    className={`border-b border-gray-700/50 ${
+                      !emp.active ? "opacity-50" : ""
+                    }`}
                   >
                     <td className="p-3 font-mono">{emp.employee_id}</td>
                     <td className="p-3 font-medium">{emp.name}</td>
@@ -214,8 +211,8 @@ export default function EmployeesPage() {
                           emp.role === "worker"
                             ? "bg-gray-700 text-gray-300"
                             : emp.role === "manager"
-                              ? "bg-blue-900 text-blue-300"
-                              : "bg-purple-900 text-purple-300"
+                            ? "bg-blue-900 text-blue-300"
+                            : "bg-purple-900 text-purple-300"
                         }`}
                       >
                         {emp.role}
@@ -223,7 +220,9 @@ export default function EmployeesPage() {
                     </td>
                     <td className="p-3">
                       <span
-                        className={`text-xs ${emp.active ? "text-green-400" : "text-red-400"}`}
+                        className={`text-xs ${
+                          emp.active ? "text-green-400" : "text-red-400"
+                        }`}
                       >
                         {emp.active ? "Active" : "Inactive"}
                       </span>
@@ -234,7 +233,11 @@ export default function EmployeesPage() {
                     <td className="p-3">
                       <button
                         onClick={() => toggleActive(emp)}
-                        className={`text-xs ${emp.active ? "text-red-400 hover:text-red-300" : "text-green-400 hover:text-green-300"}`}
+                        className={`text-xs ${
+                          emp.active
+                            ? "text-red-400 hover:text-red-300"
+                            : "text-green-400 hover:text-green-300"
+                        }`}
                       >
                         {emp.active ? "Deactivate" : "Reactivate"}
                       </button>
