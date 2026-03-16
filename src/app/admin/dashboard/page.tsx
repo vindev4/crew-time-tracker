@@ -154,18 +154,18 @@ export default function AdminDashboard() {
     }
   }
 
-  const inputClass = "p-2 bg-gray-700 border border-gray-600 rounded text-white text-sm";
+  const inputClass = "p-2 bg-[#00467F] border border-blue-600/50 rounded text-white text-sm";
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4">
+    <div className="min-h-screen bg-[#00467F] text-white p-4">
       <div className="max-w-6xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Admin Dashboard</h1>
           <div className="flex gap-3">
-            <a href="/time/admin/employees" className="px-3 py-1.5 bg-gray-700 hover:bg-gray-600 rounded text-sm">
+            <a href="/time/admin/employees" className="px-3 py-1.5 bg-[#00467F] hover:bg-[#00569C] rounded text-sm">
               Manage Employees
             </a>
-            <button onClick={handleLogout} className="px-3 py-1.5 bg-red-700 hover:bg-red-600 rounded text-sm">
+            <button onClick={handleLogout} className="px-3 py-1.5 bg-red-700 hover:bg-[#F37C05] rounded text-sm">
               Logout
             </button>
           </div>
@@ -175,7 +175,7 @@ export default function AdminDashboard() {
         <div className="flex gap-3 mb-4 flex-wrap">
           <input type="date" className={inputClass} value={startDate} onChange={(e) => setStartDate(e.target.value)} />
           <input type="date" className={inputClass} value={endDate} onChange={(e) => setEndDate(e.target.value)} />
-          <button onClick={() => { fetchPunches(); fetchReports(); }} className="px-3 py-1.5 bg-blue-600 hover:bg-blue-700 rounded text-sm">
+          <button onClick={() => { fetchPunches(); fetchReports(); }} className="px-3 py-1.5 bg-[#F37C05] hover:bg-[#E06E00] rounded text-sm">
             Filter
           </button>
           {tab === "punches" && (
@@ -187,26 +187,26 @@ export default function AdminDashboard() {
 
         {/* Tabs */}
         <div className="flex gap-1 mb-4">
-          <button onClick={() => { setTab("punches"); setSelectedReport(null); }} className={`px-4 py-2 rounded-t text-sm font-medium ${tab === "punches" ? "bg-gray-700 text-white" : "bg-gray-800 text-gray-400"}`}>
+          <button onClick={() => { setTab("punches"); setSelectedReport(null); }} className={`px-4 py-2 rounded-t text-sm font-medium ${tab === "punches" ? "bg-[#00467F] text-white" : "bg-[#003460] text-blue-200"}`}>
             Time Punches
           </button>
-          <button onClick={() => { setTab("tickets"); setSelectedReport(null); }} className={`px-4 py-2 rounded-t text-sm font-medium ${tab === "tickets" ? "bg-gray-700 text-white" : "bg-gray-800 text-gray-400"}`}>
+          <button onClick={() => { setTab("tickets"); setSelectedReport(null); }} className={`px-4 py-2 rounded-t text-sm font-medium ${tab === "tickets" ? "bg-[#00467F] text-white" : "bg-[#003460] text-blue-200"}`}>
             Work Tickets
           </button>
-          <button onClick={() => { setTab("reports"); setSelectedReport(null); }} className={`px-4 py-2 rounded-t text-sm font-medium relative ${tab === "reports" ? "bg-gray-700 text-white" : "bg-gray-800 text-gray-400"}`}>
+          <button onClick={() => { setTab("reports"); setSelectedReport(null); }} className={`px-4 py-2 rounded-t text-sm font-medium relative ${tab === "reports" ? "bg-[#00467F] text-white" : "bg-[#003460] text-blue-200"}`}>
             Field Reports
             {reports.length > 0 && (
-              <span className="ml-1.5 px-1.5 py-0.5 bg-blue-500 text-xs rounded-full">{reports.length}</span>
+              <span className="ml-1.5 px-1.5 py-0.5 bg-[#F37C05] text-xs rounded-full">{reports.length}</span>
             )}
           </button>
         </div>
 
         {/* Punches Tab */}
         {tab === "punches" && (
-          <div className="bg-gray-800 rounded overflow-x-auto">
+          <div className="bg-[#003460] rounded overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-700 text-gray-400">
+                <tr className="border-b border-blue-700/30 text-blue-200">
                   <th className="p-3 text-left">Employee</th>
                   <th className="p-3 text-left">Type</th>
                   <th className="p-3 text-left">Timestamp</th>
@@ -216,7 +216,7 @@ export default function AdminDashboard() {
               </thead>
               <tbody>
                 {punches.map((p) => (
-                  <tr key={p.id} className="border-b border-gray-700/50 hover:bg-gray-700/30">
+                  <tr key={p.id} className="border-b border-blue-700/30 hover:bg-[#00467F]/30">
                     <td className="p-3">{p.employees?.name} ({p.employees?.employee_id})</td>
                     <td className="p-3">
                       <span className={`px-2 py-0.5 rounded text-xs ${p.type === "clock_in" ? "bg-green-900 text-green-300" : "bg-red-900 text-red-300"}`}>
@@ -247,16 +247,16 @@ export default function AdminDashboard() {
                 ))}
               </tbody>
             </table>
-            {punches.length === 0 && <p className="p-6 text-center text-gray-500">No punches found</p>}
+            {punches.length === 0 && <p className="p-6 text-center text-blue-300/60">No punches found</p>}
           </div>
         )}
 
         {/* Tickets Tab */}
         {tab === "tickets" && (
-          <div className="bg-gray-800 rounded overflow-x-auto">
+          <div className="bg-[#003460] rounded overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-700 text-gray-400">
+                <tr className="border-b border-blue-700/30 text-blue-200">
                   <th className="p-3 text-left">Employee</th>
                   <th className="p-3 text-left">Notes</th>
                   <th className="p-3 text-left">Status</th>
@@ -266,11 +266,11 @@ export default function AdminDashboard() {
               </thead>
               <tbody>
                 {tickets.map((t) => (
-                  <tr key={t.id} className="border-b border-gray-700/50 hover:bg-gray-700/30">
+                  <tr key={t.id} className="border-b border-blue-700/30 hover:bg-[#00467F]/30">
                     <td className="p-3">{t.employees?.name}</td>
                     <td className="p-3 max-w-xs truncate">{t.notes}</td>
                     <td className="p-3">
-                      <span className={`px-2 py-0.5 rounded text-xs ${t.status === "open" ? "bg-yellow-900 text-yellow-300" : t.status === "in_progress" ? "bg-blue-900 text-blue-300" : "bg-gray-600 text-gray-300"}`}>
+                      <span className={`px-2 py-0.5 rounded text-xs ${t.status === "open" ? "bg-yellow-900 text-yellow-300" : t.status === "in_progress" ? "bg-blue-900 text-blue-300" : "bg-gray-600 text-blue-100"}`}>
                         {t.status}
                       </span>
                     </td>
@@ -278,7 +278,7 @@ export default function AdminDashboard() {
                     <td className="p-3">
                       <div className="flex gap-1">
                         {t.status === "open" && (
-                          <button onClick={() => handleTicketStatus(t.id, "in_progress")} className="px-2 py-0.5 bg-blue-600 rounded text-xs">Mark Reviewed</button>
+                          <button onClick={() => handleTicketStatus(t.id, "in_progress")} className="px-2 py-0.5 bg-[#F37C05] rounded text-xs">Mark Reviewed</button>
                         )}
                         {t.status !== "resolved" && (
                           <button onClick={() => handleTicketStatus(t.id, "resolved")} className="px-2 py-0.5 bg-gray-600 rounded text-xs">Close</button>
@@ -289,16 +289,16 @@ export default function AdminDashboard() {
                 ))}
               </tbody>
             </table>
-            {tickets.length === 0 && <p className="p-6 text-center text-gray-500">No tickets found</p>}
+            {tickets.length === 0 && <p className="p-6 text-center text-blue-300/60">No tickets found</p>}
           </div>
         )}
 
         {/* Reports Tab */}
         {tab === "reports" && !selectedReport && (
-          <div className="bg-gray-800 rounded overflow-x-auto">
+          <div className="bg-[#003460] rounded overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-700 text-gray-400">
+                <tr className="border-b border-blue-700/30 text-blue-200">
                   <th className="p-3 text-left">Date</th>
                   <th className="p-3 text-left">Submitted By</th>
                   <th className="p-3 text-left">Project</th>
@@ -310,7 +310,7 @@ export default function AdminDashboard() {
               </thead>
               <tbody>
                 {reports.map((r) => (
-                  <tr key={r.id} className="border-b border-gray-700/50 hover:bg-gray-700/30">
+                  <tr key={r.id} className="border-b border-blue-700/30 hover:bg-[#00467F]/30">
                     <td className="p-3">{r.report_date}</td>
                     <td className="p-3">{r.employees?.name}</td>
                     <td className="p-3">{r.project_name}</td>
@@ -318,7 +318,7 @@ export default function AdminDashboard() {
                     <td className="p-3">
                       <div className="flex items-center gap-2">
                         <div className="w-16 h-2 bg-gray-600 rounded-full overflow-hidden">
-                          <div className="h-full bg-blue-500 rounded-full" style={{ width: `${r.percent_complete}%` }} />
+                          <div className="h-full bg-[#F37C05] rounded-full" style={{ width: `${r.percent_complete}%` }} />
                         </div>
                         <span className="text-xs">{r.percent_complete}%</span>
                       </div>
@@ -333,19 +333,19 @@ export default function AdminDashboard() {
                       )}
                     </td>
                     <td className="p-3">
-                      <button onClick={() => viewReport(r.id)} className="px-2 py-0.5 bg-blue-600 hover:bg-blue-500 rounded text-xs">View</button>
+                      <button onClick={() => viewReport(r.id)} className="px-2 py-0.5 bg-[#F37C05] hover:bg-[#F37C05] rounded text-xs">View</button>
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-            {reports.length === 0 && <p className="p-6 text-center text-gray-500">No field reports found</p>}
+            {reports.length === 0 && <p className="p-6 text-center text-blue-300/60">No field reports found</p>}
           </div>
         )}
 
         {/* Report Detail View */}
         {tab === "reports" && selectedReport && (
-          <div className="bg-gray-800 rounded p-6 space-y-6">
+          <div className="bg-[#003460] rounded p-6 space-y-6">
             <div className="flex justify-between items-center">
               <h2 className="text-xl font-bold">Field Report Detail</h2>
               <button onClick={() => setSelectedReport(null)} className="px-3 py-1.5 bg-gray-600 hover:bg-gray-500 rounded text-sm">Back to List</button>
@@ -353,17 +353,17 @@ export default function AdminDashboard() {
 
             {/* Job Info */}
             <div className="grid grid-cols-2 gap-4 text-sm">
-              <div><span className="text-gray-400">Date:</span> {selectedReport.report.report_date}</div>
-              <div><span className="text-gray-400">Submitted by:</span> {selectedReport.report.employees?.name}</div>
-              <div><span className="text-gray-400">Project:</span> {selectedReport.report.project_name} {selectedReport.report.project_number && `(#${selectedReport.report.project_number})`}</div>
-              <div><span className="text-gray-400">Site:</span> {selectedReport.report.site_address || "N/A"}</div>
-              <div><span className="text-gray-400">Weather:</span> {selectedReport.report.weather_conditions} / {selectedReport.report.temperature_range}</div>
-              <div><span className="text-gray-400">Progress:</span> {selectedReport.report.percent_complete}%</div>
+              <div><span className="text-blue-200">Date:</span> {selectedReport.report.report_date}</div>
+              <div><span className="text-blue-200">Submitted by:</span> {selectedReport.report.employees?.name}</div>
+              <div><span className="text-blue-200">Project:</span> {selectedReport.report.project_name} {selectedReport.report.project_number && `(#${selectedReport.report.project_number})`}</div>
+              <div><span className="text-blue-200">Site:</span> {selectedReport.report.site_address || "N/A"}</div>
+              <div><span className="text-blue-200">Weather:</span> {selectedReport.report.weather_conditions} / {selectedReport.report.temperature_range}</div>
+              <div><span className="text-blue-200">Progress:</span> {selectedReport.report.percent_complete}%</div>
               {selectedReport.report.gps_lat && (
-                <div><span className="text-gray-400">GPS:</span> {selectedReport.report.gps_lat.toFixed(5)}, {selectedReport.report.gps_lng?.toFixed(5)}</div>
+                <div><span className="text-blue-200">GPS:</span> {selectedReport.report.gps_lat.toFixed(5)}, {selectedReport.report.gps_lng?.toFixed(5)}</div>
               )}
               <div>
-                <span className="text-gray-400">Confirmed:</span>{" "}
+                <span className="text-blue-200">Confirmed:</span>{" "}
                 {selectedReport.report.foreman_confirmed ? <span className="text-green-400">Yes</span> : <span className="text-yellow-400">No</span>}
               </div>
             </div>
@@ -371,12 +371,12 @@ export default function AdminDashboard() {
             {/* Work */}
             {selectedReport.report.work_description && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-400 mb-1">Work Performed</h3>
-                <p className="text-sm bg-gray-900 p-3 rounded">{selectedReport.report.work_description}</p>
+                <h3 className="text-sm font-semibold text-blue-200 mb-1">Work Performed</h3>
+                <p className="text-sm bg-[#00467F] p-3 rounded">{selectedReport.report.work_description}</p>
                 {selectedReport.report.work_type?.length > 0 && (
                   <div className="flex gap-1 mt-2 flex-wrap">
                     {selectedReport.report.work_type.map((t: string) => (
-                      <span key={t} className="px-2 py-0.5 bg-gray-700 rounded text-xs">{t}</span>
+                      <span key={t} className="px-2 py-0.5 bg-[#00467F] rounded text-xs">{t}</span>
                     ))}
                   </div>
                 )}
@@ -386,10 +386,10 @@ export default function AdminDashboard() {
             {/* Crew */}
             {selectedReport.crew.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-400 mb-2">Crew ({selectedReport.crew.length})</h3>
+                <h3 className="text-sm font-semibold text-blue-200 mb-2">Crew ({selectedReport.crew.length})</h3>
                 <div className="space-y-1">
                   {selectedReport.crew.map((c) => (
-                    <div key={c.id} className="flex justify-between text-sm bg-gray-900 p-2 rounded">
+                    <div key={c.id} className="flex justify-between text-sm bg-[#00467F] p-2 rounded">
                       <span>{c.employees?.name || "Unknown"} — {c.role_on_site}</span>
                       <span>{c.hours_regular}h reg {c.hours_overtime > 0 && `+ ${c.hours_overtime}h OT`}</span>
                     </div>
@@ -401,10 +401,10 @@ export default function AdminDashboard() {
             {/* Equipment */}
             {selectedReport.equipment.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-400 mb-2">Equipment ({selectedReport.equipment.length})</h3>
+                <h3 className="text-sm font-semibold text-blue-200 mb-2">Equipment ({selectedReport.equipment.length})</h3>
                 <div className="space-y-1">
                   {selectedReport.equipment.map((e) => (
-                    <div key={e.id} className="text-sm bg-gray-900 p-2 rounded">
+                    <div key={e.id} className="text-sm bg-[#00467F] p-2 rounded">
                       {e.equipment_name} {e.equipment_id_number && `(#${e.equipment_id_number})`} — {e.hours_used}h — Op: {e.operator_name}
                       {e.equipment_issues && <span className="text-yellow-400 ml-2">Issue: {e.equipment_issues}</span>}
                     </div>
@@ -416,10 +416,10 @@ export default function AdminDashboard() {
             {/* Materials */}
             {selectedReport.materials.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-400 mb-2">Materials ({selectedReport.materials.length})</h3>
+                <h3 className="text-sm font-semibold text-blue-200 mb-2">Materials ({selectedReport.materials.length})</h3>
                 <div className="space-y-1">
                   {selectedReport.materials.map((m) => (
-                    <div key={m.id} className="text-sm bg-gray-900 p-2 rounded">
+                    <div key={m.id} className="text-sm bg-[#00467F] p-2 rounded">
                       {m.material_description} — {m.quantity} {m.unit} {m.supplier && `from ${m.supplier}`}
                     </div>
                   ))}
@@ -430,10 +430,10 @@ export default function AdminDashboard() {
             {/* Subcontractors */}
             {selectedReport.subcontractors.length > 0 && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-400 mb-2">Subcontractors ({selectedReport.subcontractors.length})</h3>
+                <h3 className="text-sm font-semibold text-blue-200 mb-2">Subcontractors ({selectedReport.subcontractors.length})</h3>
                 <div className="space-y-1">
                   {selectedReport.subcontractors.map((s) => (
-                    <div key={s.id} className="text-sm bg-gray-900 p-2 rounded">
+                    <div key={s.id} className="text-sm bg-[#00467F] p-2 rounded">
                       {s.company_name} ({s.trade}) — {s.worker_count} workers — {s.work_description}
                     </div>
                   ))}
@@ -443,7 +443,7 @@ export default function AdminDashboard() {
 
             {/* Safety */}
             <div>
-              <h3 className="text-sm font-semibold text-gray-400 mb-2">Safety</h3>
+              <h3 className="text-sm font-semibold text-blue-200 mb-2">Safety</h3>
               <div className="grid grid-cols-2 gap-2 text-sm">
                 <div>Safety Briefing: {selectedReport.report.safety_briefing_held ? <span className="text-green-400">Yes</span> : <span className="text-red-400">No</span>}</div>
                 <div>PPE Compliant: {selectedReport.report.ppe_compliant ? <span className="text-green-400">Yes</span> : <span className="text-red-400">No</span>}</div>
@@ -454,15 +454,15 @@ export default function AdminDashboard() {
                 <p className="text-sm bg-red-900/30 p-2 rounded mt-2 text-red-300">{selectedReport.report.incident_description}</p>
               )}
               {selectedReport.report.hazards_identified && (
-                <p className="text-sm bg-gray-900 p-2 rounded mt-2">Hazards: {selectedReport.report.hazards_identified}</p>
+                <p className="text-sm bg-[#00467F] p-2 rounded mt-2">Hazards: {selectedReport.report.hazards_identified}</p>
               )}
             </div>
 
             {/* Notes */}
             {selectedReport.report.additional_notes && (
               <div>
-                <h3 className="text-sm font-semibold text-gray-400 mb-1">Additional Notes</h3>
-                <p className="text-sm bg-gray-900 p-3 rounded">{selectedReport.report.additional_notes}</p>
+                <h3 className="text-sm font-semibold text-blue-200 mb-1">Additional Notes</h3>
+                <p className="text-sm bg-[#00467F] p-3 rounded">{selectedReport.report.additional_notes}</p>
               </div>
             )}
           </div>
