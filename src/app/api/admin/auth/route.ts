@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import bcrypt from "bcryptjs";
-import { getServiceSupabase } from "@/lib/supabase";
 import { signAdminToken } from "@/lib/auth";
 
-// Admin login
+// Admin login - simple env var based auth
 export async function POST(request: NextRequest) {
   try {
     const { username, password } = await request.json();
-
     if (!username || !password) {
       return NextResponse.json(
         { error: "Username and password are required" },
@@ -15,23 +12,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const supabase = getServiceSupabase();
+    const adminUser = process.env.ADMIN_USERNAME || "admin";
+    const adminPass = process.env.ADMIN_PASSWORD || "duraport2026";
 
-    const { data: admin, error } = await supabase
-      .from("admins")
-      .select("*")
-      .eq("username", username)
-      .single();
-
-    if (error || !admin) {
-      return NextResponse.json(
-        { error: "Invalid username or password" },
-        { status: 401 }
-      );
-    }
-
-    const validPassword = await bcrypt.compare(password, admin.password_hash);
-    if (!validPassword) {
+    if (username !== adminUser || password !== adminPass) {
       return NextResponse.json(
         { error: "Invalid username or password" },
         { status: 401 }
@@ -39,25 +23,21 @@ export async function POST(request: NextRequest) {
     }
 
     const token = signAdminToken({
-      id: admin.id,
-      username: admin.username,
-      role: admin.role,
+      id: "admin-001",
+      username: adminUser,
+      role: "super_admin",
     });
 
     const response = NextResponse.json({
       success: true,
-      admin: {
-        id: admin.id,
-        username: admin.username,
-        role: admin.role,
-      },
+      admin: { id: "admin-001", username: adminUser, role: "super_admin" },
     });
 
     response.cookies.set("admin_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 8 * 60 * 60, // 8 hours
+      maxAge: 8 * 60 * 60,
       path: "/",
     });
 
