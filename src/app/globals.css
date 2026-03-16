@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --duraport-navy: #00467F;
+  --duraport-navy-dark: #003460;
+  --duraport-blue: #00569C;
+  --duraport-orange: #F37C05;
+  --duraport-orange-hover: #E06E00;
+  --duraport-charcoal: #30302E;
+  --duraport-cream: #FAF9F5;
+  --duraport-gray: #E8E8E8;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
