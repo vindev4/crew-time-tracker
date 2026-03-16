@@ -93,7 +93,7 @@ export default function EmployeesPage() {
             </button>
             <a
               href="/time/admin/dashboard"
-              className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm"
+              className="bg-[#00467F] hover:bg-[#00569C] px-4 py-2 rounded-lg text-sm"
             >
               Back to Dashboard
             </a>
@@ -115,12 +115,12 @@ export default function EmployeesPage() {
         {showAdd && (
           <form
             onSubmit={handleAddEmployee}
-            className="bg-gray-800 rounded-lg p-4 mb-4"
+            className="bg-[#003460] rounded-lg p-4 mb-4"
           >
             <h2 className="text-lg font-semibold mb-3">Add New Employee</h2>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label className="block text-sm text-gray-400 mb-1">
+                <label className="block text-sm text-blue-200 mb-1">
                   Employee ID
                 </label>
                 <input
@@ -128,11 +128,11 @@ export default function EmployeesPage() {
                   value={newEmpId}
                   onChange={(e) => setNewEmpId(e.target.value)}
                   placeholder="e.g. 002"
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2"
+                  className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-3 py-2"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">
+                <label className="block text-sm text-blue-200 mb-1">
                   Full Name
                 </label>
                 <input
@@ -140,11 +140,11 @@ export default function EmployeesPage() {
                   value={newName}
                   onChange={(e) => setNewName(e.target.value)}
                   placeholder="John Smith"
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2"
+                  className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-3 py-2"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">
+                <label className="block text-sm text-blue-200 mb-1">
                   PIN (4-6 digits)
                 </label>
                 <input
@@ -153,17 +153,17 @@ export default function EmployeesPage() {
                   onChange={(e) => setNewPin(e.target.value)}
                   placeholder="1234"
                   maxLength={6}
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2"
+                  className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-3 py-2"
                 />
               </div>
               <div>
-                <label className="block text-sm text-gray-400 mb-1">
+                <label className="block text-sm text-blue-200 mb-1">
                   Role
                 </label>
                 <select
                   value={newRole}
                   onChange={(e) => setNewRole(e.target.value)}
-                  className="w-full bg-gray-700 border border-gray-600 rounded-lg px-3 py-2"
+                  className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-3 py-2"
                 >
                   <option value="worker">Field Worker</option>
                   <option value="manager">Manager</option>
@@ -181,25 +181,25 @@ export default function EmployeesPage() {
 
         {/* Employees Table */}
         {loading ? (
-          <p className="text-gray-400 text-center py-8">Loading...</p>
+          <p className="text-blue-200 text-center py-8">Loading...</p>
         ) : (
-          <div className="bg-gray-800 rounded-lg overflow-hidden">
+          <div className="bg-[#003460] rounded-lg overflow-hidden">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-b border-gray-700">
-                  <th className="text-left p-3 text-gray-400">Employee ID</th>
-                  <th className="text-left p-3 text-gray-400">Name</th>
-                  <th className="text-left p-3 text-gray-400">Role</th>
-                  <th className="text-left p-3 text-gray-400">Status</th>
-                  <th className="text-left p-3 text-gray-400">Added</th>
-                  <th className="text-left p-3 text-gray-400">Actions</th>
+                <tr className="border-b border-blue-700/30">
+                  <th className="text-left p-3 text-blue-200">Employee ID</th>
+                  <th className="text-left p-3 text-blue-200">Name</th>
+                  <th className="text-left p-3 text-blue-200">Role</th>
+                  <th className="text-left p-3 text-blue-200">Status</th>
+                  <th className="text-left p-3 text-blue-200">Added</th>
+                  <th className="text-left p-3 text-blue-200">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {employees.map((emp) => (
                   <tr
                     key={emp.id}
-                    className={`border-b border-gray-700/50 ${
+                    className={`border-b border-blue-700/30 ${
                       !emp.active ? "opacity-50" : ""
                     }`}
                   >
@@ -209,7 +209,7 @@ export default function EmployeesPage() {
                       <span
                         className={`px-2 py-1 rounded text-xs ${
                           emp.role === "worker"
-                            ? "bg-gray-700 text-gray-300"
+                            ? "bg-[#00467F] text-blue-100"
                             : emp.role === "manager"
                             ? "bg-blue-900 text-blue-300"
                             : "bg-purple-900 text-purple-300"
@@ -227,7 +227,7 @@ export default function EmployeesPage() {
                         {emp.active ? "Active" : "Inactive"}
                       </span>
                     </td>
-                    <td className="p-3 text-gray-400 text-xs">
+                    <td className="p-3 text-blue-200 text-xs">
                       {new Date(emp.created_at).toLocaleDateString()}
                     </td>
                     <td className="p-3">
@@ -247,7 +247,7 @@ export default function EmployeesPage() {
               </tbody>
             </table>
             {employees.length === 0 && (
-              <p className="text-gray-500 text-center py-8">
+              <p className="text-blue-300/60 text-center py-8">
                 No employees yet. Add your first one above.
               </p>
             )}
