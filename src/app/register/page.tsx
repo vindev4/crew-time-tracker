@@ -65,26 +65,26 @@ export default function RegisterPage() {
   }
 
   const inputClass =
-    "w-full p-3 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none";
-  const labelClass = "block text-sm text-gray-300 mb-1";
+    "w-full p-3 bg-[#00467F] border border-blue-600/50 rounded text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none";
+  const labelClass = "block text-sm text-blue-100 mb-1";
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-[#00467F] text-white flex flex-col items-center justify-center p-4">
         <LanguageToggle />
-        <div className="w-full max-w-sm bg-gray-800 p-6 rounded-lg text-center">
+        <div className="w-full max-w-sm bg-[#003460] p-6 rounded-lg text-center">
           <div className="text-green-400 text-5xl mb-4">✓</div>
           <h2 className="text-xl font-bold mb-2">Registration Submitted!</h2>
-          <p className="text-gray-400 mb-4">
+          <p className="text-blue-200 mb-4">
             Your registration request has been sent to your supervisor for
             approval. You&apos;ll be able to log in once approved.
           </p>
-          <p className="text-sm text-gray-500 mb-6">
+          <p className="text-sm text-blue-300/60 mb-6">
             Your requested ID: <strong className="text-white">{desiredId}</strong>
           </p>
           <a
             href="/time"
-            className="block py-3 bg-blue-600 hover:bg-blue-700 rounded font-medium transition-colors"
+            className="block py-3 bg-[#F37C05] hover:bg-[#E06E00] rounded font-medium transition-colors"
           >
             {t("app.backToClock")}
           </a>
@@ -94,14 +94,14 @@ export default function RegisterPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-[#00467F] text-white flex flex-col items-center justify-center p-4">
       <LanguageToggle />
       <h1 className="text-2xl font-bold text-center mb-2">New Employee Registration</h1>
-      <p className="text-gray-400 mb-6 text-center text-sm">
+      <p className="text-blue-200 mb-6 text-center text-sm">
         Fill in your information below. Your account will be active once approved by admin.
       </p>
 
-      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4 bg-gray-800 p-6 rounded-lg">
+      <form onSubmit={handleSubmit} className="w-full max-w-sm space-y-4 bg-[#003460] p-6 rounded-lg">
         {error && (
           <div className="bg-red-900/50 border border-red-500 text-red-300 p-2 rounded text-sm text-center">
             {error}
@@ -142,7 +142,7 @@ export default function RegisterPage() {
           />
         </div>
 
-        <hr className="border-gray-700" />
+        <hr className="border-blue-700/30" />
 
         <div>
           <label className={labelClass}>Desired Employee ID *</label>
@@ -153,7 +153,7 @@ export default function RegisterPage() {
             placeholder="e.g. 002"
             required
           />
-          <p className="text-xs text-gray-500 mt-1">This will be your login ID</p>
+          <p className="text-xs text-blue-300/60 mt-1">This will be your login ID</p>
         </div>
 
         <div>
@@ -189,7 +189,7 @@ export default function RegisterPage() {
         </button>
       </form>
 
-      <a href="/time" className="mt-6 text-gray-500 hover:text-gray-300 text-sm">
+      <a href="/time" className="mt-6 text-blue-300/60 hover:text-blue-100 text-sm">
         {t("app.backToClock")}
       </a>
     </div>
