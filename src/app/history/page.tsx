@@ -42,7 +42,7 @@ function HistoryContent() {
 
         // Then fetch punches
         const res = await fetch(
-          `/api/punch?employee_id=${authData.employee.id}`
+          `/time/api/punch?employee_id=${authData.employee.id}`
         );
         const data = await res.json();
 
@@ -75,7 +75,7 @@ function HistoryContent() {
   }
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="min-h-screen bg-[#00467F] text-white p-4">
       <div className="max-w-lg mx-auto">
         <div className="flex items-center justify-between mb-6">
           <div>
