@@ -41,6 +41,15 @@ export async function POST(request: NextRequest) {
       path: "/",
     });
 
+    // Also set admin_authenticated for legacy API routes
+    response.cookies.set("admin_authenticated", "true", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "strict",
+      maxAge: 8 * 60 * 60,
+      path: "/",
+    });
+
     return response;
   } catch {
     return NextResponse.json(
@@ -54,5 +63,6 @@ export async function POST(request: NextRequest) {
 export async function DELETE() {
   const response = NextResponse.json({ success: true });
   response.cookies.delete("admin_token");
+  response.cookies.delete("admin_authenticated");
   return response;
 }
