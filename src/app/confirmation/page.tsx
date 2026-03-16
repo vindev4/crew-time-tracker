@@ -15,7 +15,7 @@ function ConfirmationContent() {
     : new Date().toLocaleString();
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-[#00467F] text-white flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-sm text-center">
         <div
           className={`w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 ${type === "clock_in" ? "bg-green-600" : "bg-red-600"}`}
@@ -53,7 +53,7 @@ export default function ConfirmationPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center">
+        <div className="min-h-screen bg-[#00467F] text-white flex items-center justify-center">
           <p>Loading...</p>
         </div>
       }
