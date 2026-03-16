@@ -17,7 +17,6 @@ export default function Home() {
       setError(t("error.idPin"));
       return;
     }
-
     setLoading(true);
     setError("");
 
@@ -53,7 +52,6 @@ export default function Home() {
       });
 
       const data = await res.json();
-
       if (!res.ok) {
         setError(data.error || t("error.punchFailed"));
         setLoading(false);
@@ -70,12 +68,15 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-[#00467F] text-white flex flex-col items-center justify-center p-4">
       <LanguageToggle />
-      <h1 className="text-3xl font-bold text-red-500 mb-1">{t("app.title")}</h1>
-      <p className="text-gray-400 mb-8">{t("app.subtitle")}</p>
+      <div className="mb-6">
+        <img src="https://duraport.net/wp-content/uploads/2026/01/duraport-logo.svg" alt="DuraPort" className="h-16 mx-auto" />
+      </div>
+      <h1 className="text-3xl font-bold text-[#F37C05] mb-1">{t("app.title")}</h1>
+      <p className="text-blue-200 mb-8">{t("app.subtitle")}</p>
 
-      <div className="w-full max-w-sm space-y-4 bg-gray-800 p-6 rounded-lg">
+      <div className="w-full max-w-sm space-y-4 bg-[#003460] p-6 rounded-lg border border-blue-700/30 shadow-xl">
         {error && (
           <div className="bg-red-900/50 border border-red-500 text-red-300 p-2 rounded text-sm text-center">
             {error}
@@ -83,9 +84,9 @@ export default function Home() {
         )}
 
         <div>
-          <label className="block text-sm text-gray-300 mb-1">{t("app.employeeId")}</label>
+          <label className="block text-sm text-blue-200 mb-1">{t("app.employeeId")}</label>
           <input
-            className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white text-center placeholder-gray-400"
+            className="w-full p-3 bg-[#00467F] border border-blue-600/50 rounded text-white text-center placeholder-blue-300/50 focus:outline-none focus:border-[#F37C05] focus:ring-1 focus:ring-[#F37C05]"
             value={employeeId}
             onChange={(e) => setEmployeeId(e.target.value)}
             placeholder="e.g. 001"
@@ -93,9 +94,9 @@ export default function Home() {
         </div>
 
         <div>
-          <label className="block text-sm text-gray-300 mb-1">{t("app.pin")}</label>
+          <label className="block text-sm text-blue-200 mb-1">{t("app.pin")}</label>
           <input
-            className="w-full p-3 bg-gray-700 border border-gray-600 rounded text-white text-center placeholder-gray-400"
+            className="w-full p-3 bg-[#00467F] border border-blue-600/50 rounded text-white text-center placeholder-blue-300/50 focus:outline-none focus:border-[#F37C05] focus:ring-1 focus:ring-[#F37C05]"
             type="password"
             value={pin}
             onChange={(e) => setPin(e.target.value)}
@@ -114,7 +115,7 @@ export default function Home() {
           <button
             onClick={() => handlePunch("clock_out")}
             disabled={loading}
-            className="flex-1 py-3 bg-red-600 hover:bg-red-700 rounded font-bold text-lg transition-colors disabled:opacity-50"
+            className="flex-1 py-3 bg-[#F37C05] hover:bg-[#E06E00] rounded font-bold text-lg transition-colors disabled:opacity-50"
           >
             {t("app.clockOut")}
           </button>
@@ -124,13 +125,13 @@ export default function Home() {
       <div className="flex gap-3 mt-6 w-full max-w-sm">
         <a
           href="/time/history"
-          className="flex-1 text-center py-2 bg-gray-700 hover:bg-gray-600 rounded transition-colors text-sm"
+          className="flex-1 text-center py-2 bg-[#00569C] hover:bg-[#00467F] border border-blue-600/30 rounded transition-colors text-sm"
         >
           {t("app.viewHistory")}
         </a>
         <a
           href="/time/ticket"
-          className="flex-1 text-center py-2 bg-gray-700 hover:bg-gray-600 rounded transition-colors text-sm"
+          className="flex-1 text-center py-2 bg-[#00569C] hover:bg-[#00467F] border border-blue-600/30 rounded transition-colors text-sm"
         >
           {t("app.submitTicket")}
         </a>
@@ -138,16 +139,16 @@ export default function Home() {
 
       <a
         href="/time/report/new"
-        className="mt-3 w-full max-w-sm text-center py-3 bg-blue-600 hover:bg-blue-700 rounded font-medium transition-colors block"
+        className="mt-3 w-full max-w-sm text-center py-3 bg-[#F37C05] hover:bg-[#E06E00] rounded font-medium transition-colors block"
       >
         {t("app.dailyReport")}
       </a>
 
       <div className="flex gap-4 mt-6">
-        <a href="/time/register" className="text-blue-400 hover:text-blue-300 text-sm">
+        <a href="/time/register" className="text-[#F37C05] hover:text-orange-300 text-sm">
           New Employee? Register Here
         </a>
-        <a href="/time/admin/login" className="text-gray-500 hover:text-gray-300 text-sm">
+        <a href="/time/admin/login" className="text-blue-300/60 hover:text-blue-200 text-sm">
           {t("app.adminLogin")}
         </a>
       </div>
