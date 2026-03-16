@@ -300,12 +300,12 @@ export default function DailyReportPage() {
     }
   }
 
-  const inputClass = "w-full p-3 bg-gray-700 border border-gray-600 rounded text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none";
-  const labelClass = "block text-sm text-gray-300 mb-1";
+  const inputClass = "w-full p-3 bg-[#00467F] border border-blue-600/50 rounded text-white placeholder-gray-400 focus:border-blue-500 focus:outline-none";
+  const labelClass = "block text-sm text-blue-100 mb-1";
   const btnClass = "px-4 py-2 rounded font-medium transition-colors";
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-[#00467F] text-white">
       <LanguageToggle />
       <div className="max-w-2xl mx-auto p-4">
         <h1 className="text-2xl font-bold text-center mb-2">{t("report.title")}</h1>
@@ -316,13 +316,13 @@ export default function DailyReportPage() {
             <button
               key={s}
               onClick={() => setCurrentSection(i)}
-              className={`flex-1 h-2 rounded ${i <= currentSection ? "bg-blue-500" : "bg-gray-700"}`}
+              className={`flex-1 h-2 rounded ${i <= currentSection ? "bg-blue-500" : "bg-[#00467F]"}`}
               title={s}
             />
           ))}
         </div>
 
-        <p className="text-center text-sm text-gray-400 mb-4">
+        <p className="text-center text-sm text-blue-200 mb-4">
           {sections[currentSection]} ({currentSection + 1}/{sections.length})
         </p>
 
@@ -379,7 +379,7 @@ export default function DailyReportPage() {
               <label className={labelClass}>{t("field.weather")}</label>
               <div className="flex flex-wrap gap-2">
                 {WEATHER_OPTIONS.map((w) => (
-                  <button key={w} onClick={() => setWeather(w)} className={`px-3 py-1.5 rounded text-sm ${weather === w ? "bg-blue-600" : "bg-gray-700 hover:bg-gray-600"}`}>{w}</button>
+                  <button key={w} onClick={() => setWeather(w)} className={`px-3 py-1.5 rounded text-sm ${weather === w ? "bg-[#F37C05]" : "bg-[#00467F] hover:bg-[#00569C]"}`}>{w}</button>
                 ))}
               </div>
             </div>
@@ -387,13 +387,13 @@ export default function DailyReportPage() {
               <label className={labelClass}>{t("field.temperature")}</label>
               <div className="flex flex-wrap gap-2">
                 {TEMP_RANGES.map((tr) => (
-                  <button key={tr} onClick={() => setTempRange(tr)} className={`px-3 py-1.5 rounded text-sm ${tempRange === tr ? "bg-blue-600" : "bg-gray-700 hover:bg-gray-600"}`}>{tr}</button>
+                  <button key={tr} onClick={() => setTempRange(tr)} className={`px-3 py-1.5 rounded text-sm ${tempRange === tr ? "bg-[#F37C05]" : "bg-[#00467F] hover:bg-[#00569C]"}`}>{tr}</button>
                 ))}
               </div>
             </div>
             <div className="flex items-center gap-3">
               <input type="checkbox" id="weatherImpact" checked={weatherImpact} onChange={(e) => setWeatherImpact(e.target.checked)} className="w-5 h-5" />
-              <label htmlFor="weatherImpact" className="text-gray-300">{t("field.weatherImpact")}</label>
+              <label htmlFor="weatherImpact" className="text-blue-100">{t("field.weatherImpact")}</label>
             </div>
             {weatherImpact && (
               <textarea className={inputClass} value={weatherNotes} onChange={(e) => setWeatherNotes(e.target.value)} placeholder={t("field.weatherNotes")} rows={2} />
@@ -405,9 +405,9 @@ export default function DailyReportPage() {
         {currentSection === 2 && (
           <div className="space-y-4">
             {crew.map((c, i) => (
-              <div key={i} className="bg-gray-800 p-3 rounded space-y-2">
+              <div key={i} className="bg-[#003460] p-3 rounded space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">{t("crew.member")} {i + 1}</span>
+                  <span className="text-sm text-blue-200">{t("crew.member")} {i + 1}</span>
                   <button onClick={() => removeCrew(i)} className="text-red-400 text-sm hover:text-red-300">{t("crew.remove")}</button>
                 </div>
                 <select className={inputClass} value={c.employee_id} onChange={(e) => updateCrew(i, "employee_id", e.target.value)}>
@@ -418,21 +418,21 @@ export default function DailyReportPage() {
                 </select>
                 <div className="grid grid-cols-3 gap-2">
                   <div>
-                    <label className="text-xs text-gray-400">{t("crew.regHours")}</label>
+                    <label className="text-xs text-blue-200">{t("crew.regHours")}</label>
                     <input className={inputClass} type="number" step="0.5" value={c.hours_regular} onChange={(e) => updateCrew(i, "hours_regular", parseFloat(e.target.value) || 0)} />
                   </div>
                   <div>
-                    <label className="text-xs text-gray-400">{t("crew.otHours")}</label>
+                    <label className="text-xs text-blue-200">{t("crew.otHours")}</label>
                     <input className={inputClass} type="number" step="0.5" value={c.hours_overtime} onChange={(e) => updateCrew(i, "hours_overtime", parseFloat(e.target.value) || 0)} />
                   </div>
                   <div>
-                    <label className="text-xs text-gray-400">{t("crew.role")}</label>
+                    <label className="text-xs text-blue-200">{t("crew.role")}</label>
                     <input className={inputClass} value={c.role_on_site} onChange={(e) => updateCrew(i, "role_on_site", e.target.value)} placeholder="Laborer" />
                   </div>
                 </div>
               </div>
             ))}
-            <button onClick={addCrewRow} className={`${btnClass} bg-blue-600 hover:bg-blue-700 w-full`}>{t("crew.add")}</button>
+            <button onClick={addCrewRow} className={`${btnClass} bg-[#F37C05] hover:bg-[#E06E00] w-full`}>{t("crew.add")}</button>
           </div>
         )}
 
@@ -447,7 +447,7 @@ export default function DailyReportPage() {
               <label className={labelClass}>{t("work.type")}</label>
               <div className="flex flex-wrap gap-2">
                 {WORK_TYPES.map((wt) => (
-                  <button key={wt} onClick={() => toggleWorkType(wt)} className={`px-3 py-1.5 rounded text-sm ${workTypes.includes(wt) ? "bg-blue-600" : "bg-gray-700 hover:bg-gray-600"}`}>{wt}</button>
+                  <button key={wt} onClick={() => toggleWorkType(wt)} className={`px-3 py-1.5 rounded text-sm ${workTypes.includes(wt) ? "bg-[#F37C05]" : "bg-[#00467F] hover:bg-[#00569C]"}`}>{wt}</button>
                 ))}
               </div>
             </div>
@@ -461,12 +461,12 @@ export default function DailyReportPage() {
             </div>
             <div className="flex items-center gap-3">
               <input type="checkbox" checked={delays} onChange={(e) => setDelays(e.target.checked)} className="w-5 h-5" />
-              <span className="text-gray-300">{t("work.delays")}</span>
+              <span className="text-blue-100">{t("work.delays")}</span>
             </div>
             {delays && <textarea className={inputClass} value={delayNotes} onChange={(e) => setDelayNotes(e.target.value)} placeholder={t("work.delayNotes")} rows={2} />}
             <div className="flex items-center gap-3">
               <input type="checkbox" checked={extraWork} onChange={(e) => setExtraWork(e.target.checked)} className="w-5 h-5" />
-              <span className="text-gray-300">{t("work.extraWork")}</span>
+              <span className="text-blue-100">{t("work.extraWork")}</span>
             </div>
             {extraWork && <textarea className={inputClass} value={extraWorkNotes} onChange={(e) => setExtraWorkNotes(e.target.value)} placeholder={t("work.extraNotes")} rows={2} />}
           </div>
@@ -476,9 +476,9 @@ export default function DailyReportPage() {
         {currentSection === 4 && (
           <div className="space-y-4">
             {equipment.map((eq, i) => (
-              <div key={i} className="bg-gray-800 p-3 rounded space-y-2">
+              <div key={i} className="bg-[#003460] p-3 rounded space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">{t("equip.item")} {i + 1}</span>
+                  <span className="text-sm text-blue-200">{t("equip.item")} {i + 1}</span>
                   <button onClick={() => removeEquipment(i)} className="text-red-400 text-sm hover:text-red-300">{t("crew.remove")}</button>
                 </div>
                 <input className={inputClass} value={eq.equipment_name} onChange={(e) => updateEquipment(i, "equipment_name", e.target.value)} placeholder={t("equip.name")} />
@@ -490,7 +490,7 @@ export default function DailyReportPage() {
                 <input className={inputClass} value={eq.equipment_issues} onChange={(e) => updateEquipment(i, "equipment_issues", e.target.value)} placeholder={t("equip.issues")} />
               </div>
             ))}
-            <button onClick={addEquipment} className={`${btnClass} bg-blue-600 hover:bg-blue-700 w-full`}>{t("equip.add")}</button>
+            <button onClick={addEquipment} className={`${btnClass} bg-[#F37C05] hover:bg-[#E06E00] w-full`}>{t("equip.add")}</button>
           </div>
         )}
 
@@ -498,9 +498,9 @@ export default function DailyReportPage() {
         {currentSection === 5 && (
           <div className="space-y-4">
             {materials.map((m, i) => (
-              <div key={i} className="bg-gray-800 p-3 rounded space-y-2">
+              <div key={i} className="bg-[#003460] p-3 rounded space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">{t("mat.item")} {i + 1}</span>
+                  <span className="text-sm text-blue-200">{t("mat.item")} {i + 1}</span>
                   <button onClick={() => removeMaterial(i)} className="text-red-400 text-sm hover:text-red-300">{t("crew.remove")}</button>
                 </div>
                 <input className={inputClass} value={m.material_description} onChange={(e) => updateMaterial(i, "material_description", e.target.value)} placeholder={t("mat.description")} />
@@ -513,7 +513,7 @@ export default function DailyReportPage() {
                 </div>
               </div>
             ))}
-            <button onClick={addMaterial} className={`${btnClass} bg-blue-600 hover:bg-blue-700 w-full`}>{t("mat.add")}</button>
+            <button onClick={addMaterial} className={`${btnClass} bg-[#F37C05] hover:bg-[#E06E00] w-full`}>{t("mat.add")}</button>
           </div>
         )}
 
@@ -522,15 +522,15 @@ export default function DailyReportPage() {
           <div className="space-y-4">
             <div className="flex items-center gap-3">
               <input type="checkbox" id="safety" checked={safetyBriefing} onChange={(e) => setSafetyBriefing(e.target.checked)} className="w-5 h-5" />
-              <label htmlFor="safety" className="text-gray-300">{t("safety.briefing")}</label>
+              <label htmlFor="safety" className="text-blue-100">{t("safety.briefing")}</label>
             </div>
             <div className="flex items-center gap-3">
               <input type="checkbox" id="ppe" checked={ppeCompliant} onChange={(e) => setPpeCompliant(e.target.checked)} className="w-5 h-5" />
-              <label htmlFor="ppe" className="text-gray-300">{t("safety.ppe")}</label>
+              <label htmlFor="ppe" className="text-blue-100">{t("safety.ppe")}</label>
             </div>
             <div className="flex items-center gap-3">
               <input type="checkbox" checked={incidents} onChange={(e) => setIncidents(e.target.checked)} className="w-5 h-5" />
-              <span className="text-gray-300">{t("safety.incidents")}</span>
+              <span className="text-blue-100">{t("safety.incidents")}</span>
             </div>
             {incidents && (
               <>
@@ -540,7 +540,7 @@ export default function DailyReportPage() {
             )}
             <div className="flex items-center gap-3">
               <input type="checkbox" checked={nearMisses} onChange={(e) => setNearMisses(e.target.checked)} className="w-5 h-5" />
-              <span className="text-gray-300">{t("safety.nearMisses")}</span>
+              <span className="text-blue-100">{t("safety.nearMisses")}</span>
             </div>
             {nearMisses && <textarea className={inputClass} value={nearMissNotes} onChange={(e) => setNearMissNotes(e.target.value)} placeholder={t("safety.nearMissNotes")} rows={2} />}
             <div>
@@ -558,9 +558,9 @@ export default function DailyReportPage() {
         {currentSection === 7 && (
           <div className="space-y-4">
             {subs.map((s, i) => (
-              <div key={i} className="bg-gray-800 p-3 rounded space-y-2">
+              <div key={i} className="bg-[#003460] p-3 rounded space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-400">{t("sub.item")} {i + 1}</span>
+                  <span className="text-sm text-blue-200">{t("sub.item")} {i + 1}</span>
                   <button onClick={() => removeSub(i)} className="text-red-400 text-sm hover:text-red-300">{t("crew.remove")}</button>
                 </div>
                 <input className={inputClass} value={s.company_name} onChange={(e) => updateSub(i, "company_name", e.target.value)} placeholder={t("sub.company")} />
@@ -571,17 +571,17 @@ export default function DailyReportPage() {
                 <input className={inputClass} value={s.work_description} onChange={(e) => updateSub(i, "work_description", e.target.value)} placeholder={t("sub.workDesc")} />
               </div>
             ))}
-            <button onClick={addSub} className={`${btnClass} bg-blue-600 hover:bg-blue-700 w-full`}>{t("sub.add")}</button>
+            <button onClick={addSub} className={`${btnClass} bg-[#F37C05] hover:bg-[#E06E00] w-full`}>{t("sub.add")}</button>
           </div>
         )}
 
         {/* Section 8: Photos */}
         {currentSection === 8 && (
           <div className="space-y-4">
-            <p className="text-sm text-gray-400">{t("photos.max")}</p>
+            <p className="text-sm text-blue-200">{t("photos.max")}</p>
 
             {photos.map((p, i) => (
-              <div key={i} className="bg-gray-800 p-3 rounded space-y-2">
+              <div key={i} className="bg-[#003460] p-3 rounded space-y-2">
                 <div className="flex gap-3">
                   <img src={p.preview} alt={`Photo ${i + 1}`} className="w-20 h-20 object-cover rounded" />
                   <div className="flex-1">
@@ -600,9 +600,9 @@ export default function DailyReportPage() {
             ))}
 
             {photos.length < 10 && (
-              <label className="block w-full py-8 border-2 border-dashed border-gray-600 rounded-lg text-center cursor-pointer hover:border-blue-500 transition-colors">
+              <label className="block w-full py-8 border-2 border-dashed border-blue-600/50 rounded-lg text-center cursor-pointer hover:border-blue-500 transition-colors">
                 <div className="text-3xl mb-2">📷</div>
-                <p className="text-gray-400">{t("photos.tap")}</p>
+                <p className="text-blue-200">{t("photos.tap")}</p>
                 <input
                   type="file"
                   accept="image/jpeg,image/png,image/webp,image/heic"
@@ -634,12 +634,12 @@ export default function DailyReportPage() {
         {/* Navigation */}
         <div className="flex gap-3 mt-6">
           {currentSection > 0 && (
-            <button onClick={() => setCurrentSection(currentSection - 1)} className={`${btnClass} bg-gray-700 hover:bg-gray-600 flex-1`}>
+            <button onClick={() => setCurrentSection(currentSection - 1)} className={`${btnClass} bg-[#00467F] hover:bg-[#00569C] flex-1`}>
               {t("btn.back")}
             </button>
           )}
           {currentSection < sections.length - 1 ? (
-            <button onClick={() => setCurrentSection(currentSection + 1)} className={`${btnClass} bg-blue-600 hover:bg-blue-700 flex-1`}>
+            <button onClick={() => setCurrentSection(currentSection + 1)} className={`${btnClass} bg-[#F37C05] hover:bg-[#E06E00] flex-1`}>
               {t("btn.next")}
             </button>
           ) : (
@@ -650,7 +650,7 @@ export default function DailyReportPage() {
         </div>
 
         <div className="text-center mt-6">
-          <a href="/time" className="text-gray-500 hover:text-gray-300 text-sm">{t("app.backToClock")}</a>
+          <a href="/time" className="text-blue-300/60 hover:text-blue-100 text-sm">{t("app.backToClock")}</a>
         </div>
       </div>
     </div>
