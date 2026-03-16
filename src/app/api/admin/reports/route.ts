@@ -33,7 +33,7 @@ export async function GET(request: NextRequest) {
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   // Get employee names
-  const empIds = [...new Set((reports || []).map((r) => r.employee_id))];
+  const empIds = Array.from(new Set((reports || []).map((r) => r.employee_id)));
   let employeeMap: Record<string, string> = {};
   if (empIds.length > 0) {
     const { data: emps } = await supabase
