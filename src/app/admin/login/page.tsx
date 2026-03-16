@@ -18,7 +18,6 @@ export default function AdminLoginPage() {
     }
     setLoading(true);
     setError("");
-
     try {
       const res = await fetch("/time/api/admin/auth", {
         method: "POST",
@@ -42,12 +41,19 @@ export default function AdminLoginPage() {
     <div className="min-h-screen bg-[#00467F] flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <img src="https://duraport.net/wp-content/uploads/2026/01/duraport-logo.svg" alt="DuraPort" className="h-14 mx-auto mb-4" />
+          <img
+            src="https://duraport.net/wp-content/uploads/2026/01/duraport-logo.svg"
+            alt="DuraPort"
+            className="h-14 mx-auto mb-4"
+          />
           <h1 className="text-2xl font-bold text-white mb-2">Admin Login</h1>
           <p className="text-blue-200">Crew Time Tracker Management</p>
         </div>
 
-        <form onSubmit={handleLogin} className="bg-[#003460] rounded-xl p-6 border border-blue-700/30 shadow-xl">
+        <form
+          onSubmit={handleLogin}
+          className="bg-[#003460] rounded-xl p-6 border border-blue-700/30 shadow-xl"
+        >
           {error && (
             <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-4">
               {error}
@@ -86,8 +92,11 @@ export default function AdminLoginPage() {
         </form>
 
         <div className="text-center mt-4">
-          <a href="/time/" className="text-blue-300/60 text-sm hover:text-blue-200">
-            Back to Clock In
+          <a
+            href="/time/login"
+            className="text-blue-300/60 text-sm hover:text-blue-200"
+          >
+            Back to Employee Login
           </a>
         </div>
       </div>
