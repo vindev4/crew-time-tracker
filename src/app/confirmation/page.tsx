@@ -27,10 +27,10 @@ function ConfirmationContent() {
           {type === "clock_in" ? "Clocked In" : "Clocked Out"}
         </h1>
 
-        <p className="text-xl text-gray-300 mb-1">{name}</p>
-        <p className="text-gray-400 mb-4">{formattedTime}</p>
+        <p className="text-xl text-blue-100 mb-1">{name}</p>
+        <p className="text-blue-200 mb-4">{formattedTime}</p>
 
-        <div className="bg-gray-800 rounded-lg p-3 mb-6 inline-block">
+        <div className="bg-[#003460] rounded-lg p-3 mb-6 inline-block">
           <span className={`text-sm ${gps ? "text-green-400" : "text-yellow-400"}`}>
             {gps ? "ð GPS Location Recorded" : "â ï¸ GPS Not Available"}
           </span>
@@ -39,7 +39,7 @@ function ConfirmationContent() {
         <div>
           <a
             href="/time/"
-            className="block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition-colors"
+            className="block bg-[#F37C05] hover:bg-[#E06E00] text-white font-bold py-3 px-6 rounded-lg transition-colors"
           >
             Done
           </a>
