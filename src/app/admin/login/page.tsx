@@ -1,4 +1,5 @@
 "use client";
+
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -17,6 +18,7 @@ export default function AdminLoginPage() {
     }
     setLoading(true);
     setError("");
+
     try {
       const res = await fetch("/time/api/admin/auth", {
         method: "POST",
@@ -37,49 +39,54 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4">
+    <div className="min-h-screen bg-[#00467F] flex flex-col items-center justify-center p-4">
       <div className="w-full max-w-sm">
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold mb-2">Admin Login</h1>
-          <p className="text-gray-400">Crew Time Tracker Management</p>
+          <img src="https://duraport.net/wp-content/uploads/2026/01/duraport-logo.svg" alt="DuraPort" className="h-14 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-white mb-2">Admin Login</h1>
+          <p className="text-blue-200">Crew Time Tracker Management</p>
         </div>
 
-        <form onSubmit={handleLogin} className="bg-gray-800 rounded-xl p-6">
+        <form onSubmit={handleLogin} className="bg-[#003460] rounded-xl p-6 border border-blue-700/30 shadow-xl">
           {error && (
             <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-4">
               {error}
             </div>
           )}
+
           <div className="mb-4">
-            <label className="block text-sm text-gray-400 mb-1">Username</label>
+            <label className="block text-sm text-blue-200 mb-1">Username</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500"
+              className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#F37C05] focus:ring-1 focus:ring-[#F37C05]"
               disabled={loading}
             />
           </div>
+
           <div className="mb-6">
-            <label className="block text-sm text-gray-400 mb-1">Password</label>
+            <label className="block text-sm text-blue-200 mb-1">Password</label>
             <input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-gray-700 border border-gray-600 rounded-lg px-4 py-3 focus:outline-none focus:border-blue-500"
+              className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#F37C05] focus:ring-1 focus:ring-[#F37C05]"
               disabled={loading}
             />
           </div>
+
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:opacity-50 text-white font-bold py-3 rounded-lg transition-colors"
+            className="w-full bg-[#F37C05] hover:bg-[#E06E00] disabled:opacity-50 text-white font-bold py-3 rounded-lg transition-colors"
           >
             {loading ? "Signing in..." : "Sign In"}
           </button>
         </form>
+
         <div className="text-center mt-4">
-          <a href="/time/" className="text-gray-500 text-sm hover:text-gray-400">
+          <a href="/time/" className="text-blue-300/60 text-sm hover:text-blue-200">
             Back to Clock In
           </a>
         </div>
