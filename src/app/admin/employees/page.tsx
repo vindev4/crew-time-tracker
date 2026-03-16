@@ -10,7 +10,8 @@ interface Employee {
   phone: string;
   role: string;
   active: boolean;
-  has_password: boolean;
+  has_pin: boolean;
+  approved: boolean | null;
   created_at: string;
 }
 
@@ -25,6 +26,10 @@ export default function ManageEmployees() {
 
   async function fetchEmployees() {
     const res = await fetch("/time/api/admin/employees");
+    if (res.status === 401) {
+      router.push("/admin/login");
+      return;
+    }
     if (res.ok) {
       const data = await res.json();
       setEmployees(data.employees || []);
@@ -45,12 +50,21 @@ export default function ManageEmployees() {
     if (res.ok) fetchEmployees();
   }
 
-  async function resetPassword(emp: Employee) {
-    if (!confirm(`Reset password for ${emp.name}? They will need to set a new one on next login.`)) return;
+  async function resetPin(emp: Employee) {
+    if (!confirm(`Reset PIN for ${emp.name}? They will need to set a new one on next login.`)) return;
     const res = await fetch("/time/api/admin/employees", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: emp.id, reset_password: true }),
+      body: JSON.stringify({ id: emp.id, reset_pin: true }),
+    });
+    if (res.ok) fetchEmployees();
+  }
+
+  async function approveEmployee(emp: Employee, approve: boolean) {
+    const res = await fetch("/time/api/admin/employees", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: emp.id, approve }),
     });
     if (res.ok) fetchEmployees();
   }
@@ -70,6 +84,10 @@ export default function ManageEmployees() {
       fetchEmployees();
     }
   }
+
+  const pendingApproval = employees.filter(
+    (e) => e.has_pin && e.approved === false && e.active
+  );
 
   const filtered = employees.filter(
     (e) =>
@@ -98,6 +116,42 @@ export default function ManageEmployees() {
             </button>
           </div>
         </div>
+
+        {/* Pending Approvals Section */}
+        {pendingApproval.length > 0 && (
+          <div className="bg-[#003460] border border-yellow-500/30 rounded-lg p-4 mb-6">
+            <h2 className="text-lg font-semibold text-yellow-400 mb-3">
+              Pending Registrations ({pendingApproval.length})
+            </h2>
+            <div className="space-y-2">
+              {pendingApproval.map((emp) => (
+                <div key={emp.id} className="flex items-center justify-between bg-[#00467F]/50 rounded p-3">
+                  <div>
+                    <span className="font-medium">{emp.name}</span>
+                    <span className="text-blue-300 text-sm ml-3">ID: {emp.employee_id}</span>
+                    <span className="text-blue-300 text-sm ml-3">
+                      {emp.phone ? `(${emp.phone.slice(0, 3)}) ${emp.phone.slice(3, 6)}-${emp.phone.slice(6)}` : "—"}
+                    </span>
+                  </div>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => approveEmployee(emp, true)}
+                      className="px-3 py-1 bg-green-600 hover:bg-green-500 rounded text-sm font-medium"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => approveEmployee(emp, false)}
+                      className="px-3 py-1 bg-red-700 hover:bg-red-600 rounded text-sm font-medium"
+                    >
+                      Deny
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Add Employee Form */}
         {showAdd && (
@@ -135,7 +189,8 @@ export default function ManageEmployees() {
                 <th className="p-3 text-left">Name</th>
                 <th className="p-3 text-left">Phone</th>
                 <th className="p-3 text-center">Status</th>
-                <th className="p-3 text-center">Password</th>
+                <th className="p-3 text-center">PIN</th>
+                <th className="p-3 text-center">Approved</th>
                 <th className="p-3 text-right">Actions</th>
               </tr>
             </thead>
@@ -153,8 +208,13 @@ export default function ManageEmployees() {
                     </span>
                   </td>
                   <td className="p-3 text-center">
-                    <span className={`text-xs ${emp.has_password ? "text-green-400" : "text-yellow-400"}`}>
-                      {emp.has_password ? "Set" : "Pending"}
+                    <span className={`text-xs ${emp.has_pin ? "text-green-400" : "text-yellow-400"}`}>
+                      {emp.has_pin ? "Set" : "Pending"}
+                    </span>
+                  </td>
+                  <td className="p-3 text-center">
+                    <span className={`text-xs ${emp.approved === true ? "text-green-400" : emp.approved === false ? "text-yellow-400" : "text-blue-400"}`}>
+                      {emp.approved === true ? "Yes" : emp.approved === false ? "Pending" : "N/A"}
                     </span>
                   </td>
                   <td className="p-3 text-right">
@@ -165,12 +225,20 @@ export default function ManageEmployees() {
                       >
                         {emp.active ? "Disable" : "Enable"}
                       </button>
-                      {emp.has_password && (
+                      {emp.has_pin && (
                         <button
-                          onClick={() => resetPassword(emp)}
+                          onClick={() => resetPin(emp)}
                           className="px-2 py-0.5 bg-gray-600 hover:bg-gray-500 rounded text-xs"
                         >
-                          Reset PW
+                          Reset PIN
+                        </button>
+                      )}
+                      {emp.approved === false && (
+                        <button
+                          onClick={() => approveEmployee(emp, true)}
+                          className="px-2 py-0.5 bg-green-600 hover:bg-green-500 rounded text-xs"
+                        >
+                          Approve
                         </button>
                       )}
                     </div>
