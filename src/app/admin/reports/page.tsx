@@ -96,46 +96,46 @@ export default function AdminReportsPage() {
     setExportLoading(false);
   }
 
-  const inputClass = "p-2 bg-gray-700 border border-gray-600 rounded text-white text-sm";
+  const inputClass = "p-2 bg-[#00467F] border border-blue-600/50 rounded text-white text-sm";
 
   if (selectedReport) {
     const r = selectedReport.report;
     return (
-      <div className="min-h-screen bg-gray-900 text-white p-4">
+      <div className="min-h-screen bg-[#00467F] text-white p-4">
         <div className="max-w-3xl mx-auto">
           <button
             onClick={() => setSelectedReport(null)}
-            className="mb-4 text-blue-400 hover:text-blue-300 text-sm"
+            className="mb-4 text-[#F37C05] hover:text-orange-300 text-sm"
           >
             ← Back to Reports List
           </button>
 
           <h1 className="text-2xl font-bold mb-1">{r.project_name}</h1>
-          <p className="text-gray-400 mb-4">
+          <p className="text-blue-200 mb-4">
             {r.report_date} | By {r.employees?.name} ({r.employees?.employee_id})
           </p>
 
           <div className="space-y-4">
-            <div className="bg-gray-800 p-4 rounded">
-              <h3 className="font-medium text-blue-400 mb-2">Job Site Info</h3>
-              <p className="text-sm text-gray-300">Project #: {r.project_number || "N/A"}</p>
-              <p className="text-sm text-gray-300">Address: {r.site_address || "N/A"}</p>
-              <p className="text-sm text-gray-300">Weather: {r.weather_conditions} | {r.temperature_range}</p>
+            <div className="bg-[#003460] p-4 rounded">
+              <h3 className="font-medium text-[#F37C05] mb-2">Job Site Info</h3>
+              <p className="text-sm text-blue-100">Project #: {r.project_number || "N/A"}</p>
+              <p className="text-sm text-blue-100">Address: {r.site_address || "N/A"}</p>
+              <p className="text-sm text-blue-100">Weather: {r.weather_conditions} | {r.temperature_range}</p>
             </div>
 
-            <div className="bg-gray-800 p-4 rounded">
-              <h3 className="font-medium text-blue-400 mb-2">Work Performed</h3>
-              <p className="text-sm text-gray-300 whitespace-pre-wrap">{r.work_description}</p>
-              <p className="text-sm text-gray-400 mt-2">
+            <div className="bg-[#003460] p-4 rounded">
+              <h3 className="font-medium text-[#F37C05] mb-2">Work Performed</h3>
+              <p className="text-sm text-blue-100 whitespace-pre-wrap">{r.work_description}</p>
+              <p className="text-sm text-blue-200 mt-2">
                 Types: {(r.work_type || []).join(", ")} | Phase: {r.phase_of_work} | {r.percent_complete}% complete
               </p>
             </div>
 
             {selectedReport.crew.length > 0 && (
-              <div className="bg-gray-800 p-4 rounded">
-                <h3 className="font-medium text-blue-400 mb-2">Crew ({selectedReport.crew.length})</h3>
+              <div className="bg-[#003460] p-4 rounded">
+                <h3 className="font-medium text-[#F37C05] mb-2">Crew ({selectedReport.crew.length})</h3>
                 {selectedReport.crew.map((c, i) => (
-                  <p key={i} className="text-sm text-gray-300">
+                  <p key={i} className="text-sm text-blue-100">
                     {c.employees?.name || c.employee_id} — {c.hours_regular}h reg, {c.hours_overtime}h OT — {c.role_on_site}
                   </p>
                 ))}
@@ -143,10 +143,10 @@ export default function AdminReportsPage() {
             )}
 
             {selectedReport.equipment.length > 0 && (
-              <div className="bg-gray-800 p-4 rounded">
-                <h3 className="font-medium text-blue-400 mb-2">Equipment ({selectedReport.equipment.length})</h3>
+              <div className="bg-[#003460] p-4 rounded">
+                <h3 className="font-medium text-[#F37C05] mb-2">Equipment ({selectedReport.equipment.length})</h3>
                 {selectedReport.equipment.map((e, i) => (
-                  <p key={i} className="text-sm text-gray-300">
+                  <p key={i} className="text-sm text-blue-100">
                     {e.equipment_name} — {e.hours_used}h — Op: {e.operator_name}
                     {e.equipment_issues ? ` — Issues: ${e.equipment_issues}` : ""}
                   </p>
@@ -155,10 +155,10 @@ export default function AdminReportsPage() {
             )}
 
             {selectedReport.materials.length > 0 && (
-              <div className="bg-gray-800 p-4 rounded">
-                <h3 className="font-medium text-blue-400 mb-2">Materials ({selectedReport.materials.length})</h3>
+              <div className="bg-[#003460] p-4 rounded">
+                <h3 className="font-medium text-[#F37C05] mb-2">Materials ({selectedReport.materials.length})</h3>
                 {selectedReport.materials.map((m, i) => (
-                  <p key={i} className="text-sm text-gray-300">
+                  <p key={i} className="text-sm text-blue-100">
                     {m.material_description} — {m.quantity} {m.unit} — {m.supplier}
                   </p>
                 ))}
@@ -166,10 +166,10 @@ export default function AdminReportsPage() {
             )}
 
             {selectedReport.subcontractors.length > 0 && (
-              <div className="bg-gray-800 p-4 rounded">
-                <h3 className="font-medium text-blue-400 mb-2">Subcontractors ({selectedReport.subcontractors.length})</h3>
+              <div className="bg-[#003460] p-4 rounded">
+                <h3 className="font-medium text-[#F37C05] mb-2">Subcontractors ({selectedReport.subcontractors.length})</h3>
                 {selectedReport.subcontractors.map((s, i) => (
-                  <p key={i} className="text-sm text-gray-300">
+                  <p key={i} className="text-sm text-blue-100">
                     {s.company_name} ({s.trade}) — {s.worker_count} workers — {s.work_description}
                   </p>
                 ))}
@@ -177,24 +177,24 @@ export default function AdminReportsPage() {
             )}
 
             {selectedReport.photos.length > 0 && (
-              <div className="bg-gray-800 p-4 rounded">
-                <h3 className="font-medium text-blue-400 mb-2">Photos ({selectedReport.photos.length})</h3>
+              <div className="bg-[#003460] p-4 rounded">
+                <h3 className="font-medium text-[#F37C05] mb-2">Photos ({selectedReport.photos.length})</h3>
                 <div className="grid grid-cols-2 gap-2">
                   {selectedReport.photos.map((p, i) => (
                     <div key={i}>
                       <img src={p.public_url} alt={p.caption || `Photo ${i + 1}`} className="rounded w-full" />
-                      {p.caption && <p className="text-xs text-gray-400 mt-1">{p.caption}</p>}
+                      {p.caption && <p className="text-xs text-blue-200 mt-1">{p.caption}</p>}
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            <div className="bg-gray-800 p-4 rounded">
-              <h3 className="font-medium text-blue-400 mb-2">Safety</h3>
-              <p className="text-sm text-gray-300">Briefing held: {r.safety_briefing_held ? "Yes" : "No"}</p>
-              <p className="text-sm text-gray-300">Incidents: {r.incidents_occurred ? "Yes" : "No"}</p>
-              <p className="text-sm text-gray-300">Foreman confirmed: {r.foreman_confirmed ? "Yes" : "No"}</p>
+            <div className="bg-[#003460] p-4 rounded">
+              <h3 className="font-medium text-[#F37C05] mb-2">Safety</h3>
+              <p className="text-sm text-blue-100">Briefing held: {r.safety_briefing_held ? "Yes" : "No"}</p>
+              <p className="text-sm text-blue-100">Incidents: {r.incidents_occurred ? "Yes" : "No"}</p>
+              <p className="text-sm text-blue-100">Foreman confirmed: {r.foreman_confirmed ? "Yes" : "No"}</p>
             </div>
           </div>
         </div>
@@ -203,18 +203,18 @@ export default function AdminReportsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4">
+    <div className="min-h-screen bg-[#00467F] text-white p-4">
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold">Daily Field Reports</h1>
-          <a href="/time/admin/dashboard" className="text-blue-400 hover:text-blue-300 text-sm">
+          <a href="/time/admin/dashboard" className="text-[#F37C05] hover:text-orange-300 text-sm">
             ← Dashboard
           </a>
         </div>
 
         <div className="flex flex-wrap gap-3 mb-6 items-end">
           <div>
-            <label className="block text-xs text-gray-400 mb-1">Start Date</label>
+            <label className="block text-xs text-blue-200 mb-1">Start Date</label>
             <input
               type="date"
               className={inputClass}
@@ -223,7 +223,7 @@ export default function AdminReportsPage() {
             />
           </div>
           <div>
-            <label className="block text-xs text-gray-400 mb-1">End Date</label>
+            <label className="block text-xs text-blue-200 mb-1">End Date</label>
             <input
               type="date"
               className={inputClass}
@@ -233,7 +233,7 @@ export default function AdminReportsPage() {
           </div>
           <button
             onClick={fetchReports}
-            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded text-sm font-medium"
+            className="px-4 py-2 bg-[#F37C05] hover:bg-[#E06E00] rounded text-sm font-medium"
           >
             Filter
           </button>
@@ -247,24 +247,24 @@ export default function AdminReportsPage() {
         </div>
 
         {loading ? (
-          <p className="text-gray-400">Loading reports...</p>
+          <p className="text-blue-200">Loading reports...</p>
         ) : reports.length === 0 ? (
-          <p className="text-gray-400">No reports found.</p>
+          <p className="text-blue-200">No reports found.</p>
         ) : (
           <div className="space-y-2">
             {reports.map((r) => (
               <div
                 key={r.id}
                 onClick={() => viewDetail(r.id)}
-                className="bg-gray-800 p-4 rounded cursor-pointer hover:bg-gray-750 hover:border-blue-500 border border-gray-700 transition-colors"
+                className="bg-[#003460] p-4 rounded cursor-pointer hover:bg-gray-750 hover:border-blue-500 border border-blue-700/30 transition-colors"
               >
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="font-medium">{r.project_name}</h3>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-blue-200">
                       {r.report_date} | {r.employees?.name} ({r.employees?.employee_id})
                     </p>
-                    <p className="text-sm text-gray-500 mt-1">
+                    <p className="text-sm text-blue-300/60 mt-1">
                       {r.weather_conditions} | {(r.work_type || []).slice(0, 3).join(", ")} | {r.percent_complete}%
                     </p>
                   </div>
@@ -277,7 +277,7 @@ export default function AdminReportsPage() {
                     )}
                   </div>
                 </div>
-                {detailLoading && <p className="text-xs text-gray-500 mt-1">Loading...</p>}
+                {detailLoading && <p className="text-xs text-blue-300/60 mt-1">Loading...</p>}
               </div>
             ))}
           </div>
