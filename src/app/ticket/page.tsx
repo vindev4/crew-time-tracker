@@ -30,7 +30,7 @@ function TicketContent() {
 
   if (success) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center p-4">
+      <div className="min-h-screen bg-[#00467F] text-white flex flex-col items-center justify-center p-4">
         <div className="text-center">
           <div className="w-20 h-20 rounded-full bg-green-600 flex items-center justify-center mx-auto mb-4"><span className="text-3xl">\u2713</span></div>
           <h1 className="text-2xl font-bold mb-2">Ticket Submitted</h1>
@@ -45,7 +45,7 @@ function TicketContent() {
   }
 
   return (
-    <div className="min-h-screen p-4">
+    <div className="min-h-screen bg-[#00467F] text-white p-4">
       <div className="max-w-lg mx-auto">
         <div className="flex items-center justify-between mb-6">
           <h1 className="text-2xl font-bold">Submit Work Ticket</h1>
@@ -65,5 +65,5 @@ function TicketContent() {
 }
 
 export default function TicketPage() {
-  return (<Suspense fallback={<div className="min-h-screen flex items-center justify-center"><p>Loading...</p></div>}><TicketContent /></Suspense>);
+  return (<Suspense fallback={<div className="min-h-screen bg-[#00467F] text-white flex items-center justify-center"><p>Loading...</p></div>}><TicketContent /></Suspense>);
 }
