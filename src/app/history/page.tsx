@@ -69,7 +69,7 @@ function HistoryContent() {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-gray-400">Loading history...</p>
+        <p className="text-blue-200">Loading history...</p>
       </div>
     );
   }
@@ -81,12 +81,12 @@ function HistoryContent() {
           <div>
             <h1 className="text-2xl font-bold">My History</h1>
             {employeeName && (
-              <p className="text-gray-400">{employeeName}</p>
+              <p className="text-blue-200">{employeeName}</p>
             )}
           </div>
           <a
             href="/time/"
-            className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg text-sm"
+            className="bg-[#00467F] hover:bg-[#00569C] px-4 py-2 rounded-lg text-sm"
           >
             Back
           </a>
@@ -99,7 +99,7 @@ function HistoryContent() {
         )}
 
         {punches.length === 0 && !error ? (
-          <div className="text-center text-gray-500 py-12">
+          <div className="text-center text-blue-300/60 py-12">
             No punches recorded yet
           </div>
         ) : (
@@ -107,7 +107,7 @@ function HistoryContent() {
             {punches.map((punch) => (
               <div
                 key={punch.id}
-                className="bg-gray-800 rounded-lg p-4 flex items-center justify-between"
+                className="bg-[#003460] rounded-lg p-4 flex items-center justify-between"
               >
                 <div className="flex items-center gap-3">
                   <div
@@ -117,13 +117,13 @@ function HistoryContent() {
                     <span className="font-medium">
                       {punch.type === "clock_in" ? "Clock In" : "Clock Out"}
                     </span>
-                    <p className="text-sm text-gray-400">
+                    <p className="text-sm text-blue-200">
                       {new Date(punch.timestamp).toLocaleString()}
                     </p>
                   </div>
                 </div>
                 <span
-                  className={`text-xs ${punch.gps_available ? "text-green-400" : "text-gray-500"}`}
+                  className={`text-xs ${punch.gps_available ? "text-green-400" : "text-blue-300/60"}`}
                 >
                   {punch.gps_available ? "ð" : "â"}
                 </span>
