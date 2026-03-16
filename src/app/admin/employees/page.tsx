@@ -1,4 +1,5 @@
 "use client";
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -6,253 +7,181 @@ interface Employee {
   id: string;
   employee_id: string;
   name: string;
+  phone: string;
   role: string;
   active: boolean;
+  has_password: boolean;
   created_at: string;
 }
 
-export default function EmployeesPage() {
+export default function ManageEmployees() {
   const router = useRouter();
   const [employees, setEmployees] = useState<Employee[]>([]);
-  const [loading, setLoading] = useState(true);
   const [showAdd, setShowAdd] = useState(false);
-  const [newEmpId, setNewEmpId] = useState("");
   const [newName, setNewName] = useState("");
-  const [newPin, setNewPin] = useState("");
-  const [newRole, setNewRole] = useState("worker");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [newPhone, setNewPhone] = useState("");
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  async function fetchEmployees() {
+    const res = await fetch("/time/api/admin/employees");
+    if (res.ok) {
+      const data = await res.json();
+      setEmployees(data.employees || []);
+    }
+    setLoading(false);
+  }
 
   useEffect(() => {
     fetchEmployees();
   }, []);
 
-  async function fetchEmployees() {
-    const res = await fetch("/time/api/admin/employees");
-    if (res.status === 401) {
-      router.push("/admin/login");
-      return;
-    }
-    const data = await res.json();
-    setEmployees(data.employees || []);
-    setLoading(false);
-  }
-
-  async function handleAddEmployee(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
-    if (!newEmpId || !newName || !newPin) {
-      setError("All fields are required");
-      return;
-    }
-    const res = await fetch("/time/api/admin/employees", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        employee_id: newEmpId,
-        name: newName,
-        pin: newPin,
-        role: newRole,
-      }),
-    });
-    const data = await res.json();
-    if (res.ok) {
-      setSuccess(`Added ${newName} (ID: ${newEmpId})`);
-      setNewEmpId("");
-      setNewName("");
-      setNewPin("");
-      setNewRole("worker");
-      setShowAdd(false);
-      fetchEmployees();
-    } else {
-      setError(data.error || "Failed to add employee");
-    }
-  }
-
   async function toggleActive(emp: Employee) {
-    await fetch("/time/api/admin/employees", {
+    const res = await fetch("/time/api/admin/employees", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: emp.id, active: !emp.active }),
     });
-    fetchEmployees();
+    if (res.ok) fetchEmployees();
   }
+
+  async function resetPassword(emp: Employee) {
+    if (!confirm(`Reset password for ${emp.name}? They will need to set a new one on next login.`)) return;
+    const res = await fetch("/time/api/admin/employees", {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: emp.id, reset_password: true }),
+    });
+    if (res.ok) fetchEmployees();
+  }
+
+  async function addEmployee(e: React.FormEvent) {
+    e.preventDefault();
+    if (!newName || !newPhone) return;
+    const res = await fetch("/time/api/admin/employees", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: newName, phone: newPhone }),
+    });
+    if (res.ok) {
+      setNewName("");
+      setNewPhone("");
+      setShowAdd(false);
+      fetchEmployees();
+    }
+  }
+
+  const filtered = employees.filter(
+    (e) =>
+      e.name.toLowerCase().includes(search.toLowerCase()) ||
+      e.phone?.includes(search) ||
+      e.employee_id.includes(search)
+  );
+
+  const activeCount = employees.filter((e) => e.active).length;
+  const inputClass = "p-2 bg-[#00467F] border border-blue-600/50 rounded text-white text-sm placeholder-blue-300/50 focus:outline-none focus:ring-2 focus:ring-[#F37C05]";
 
   return (
     <div className="min-h-screen bg-[#00467F] text-white p-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-2xl font-bold">Manage Employees</h1>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setShowAdd(!showAdd)}
-              className="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-lg text-sm"
-            >
+      <div className="max-w-5xl mx-auto">
+        <div className="flex justify-between items-center mb-6">
+          <div>
+            <h1 className="text-2xl font-bold">Manage Employees</h1>
+            <p className="text-blue-300 text-sm">{activeCount} active / {employees.length} total</p>
+          </div>
+          <div className="flex gap-3">
+            <a href="/time/admin/dashboard" className="px-3 py-1.5 bg-[#003460] hover:bg-[#00569C] rounded text-sm">
+              Dashboard
+            </a>
+            <button onClick={() => setShowAdd(!showAdd)} className="px-3 py-1.5 bg-[#F37C05] hover:bg-[#E06E00] rounded text-sm font-medium">
               {showAdd ? "Cancel" : "+ Add Employee"}
             </button>
-            <a
-              href="/time/admin/dashboard"
-              className="bg-[#00467F] hover:bg-[#00569C] px-4 py-2 rounded-lg text-sm"
-            >
-              Back to Dashboard
-            </a>
           </div>
         </div>
 
-        {error && (
-          <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-4">
-            {error}
-          </div>
-        )}
-        {success && (
-          <div className="bg-green-900/50 border border-green-500 text-green-200 px-4 py-3 rounded-lg mb-4">
-            {success}
-          </div>
-        )}
-
         {/* Add Employee Form */}
         {showAdd && (
-          <form
-            onSubmit={handleAddEmployee}
-            className="bg-[#003460] rounded-lg p-4 mb-4"
-          >
-            <h2 className="text-lg font-semibold mb-3">Add New Employee</h2>
-            <div className="grid grid-cols-2 gap-3">
-              <div>
-                <label className="block text-sm text-blue-200 mb-1">
-                  Employee ID
-                </label>
-                <input
-                  type="text"
-                  value={newEmpId}
-                  onChange={(e) => setNewEmpId(e.target.value)}
-                  placeholder="e.g. 002"
-                  className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-3 py-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-blue-200 mb-1">
-                  Full Name
-                </label>
-                <input
-                  type="text"
-                  value={newName}
-                  onChange={(e) => setNewName(e.target.value)}
-                  placeholder="John Smith"
-                  className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-3 py-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-blue-200 mb-1">
-                  PIN (4-6 digits)
-                </label>
-                <input
-                  type="text"
-                  value={newPin}
-                  onChange={(e) => setNewPin(e.target.value)}
-                  placeholder="1234"
-                  maxLength={6}
-                  className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-3 py-2"
-                />
-              </div>
-              <div>
-                <label className="block text-sm text-blue-200 mb-1">
-                  Role
-                </label>
-                <select
-                  value={newRole}
-                  onChange={(e) => setNewRole(e.target.value)}
-                  className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-3 py-2"
-                >
-                  <option value="worker">Field Worker</option>
-                  <option value="manager">Manager</option>
-                </select>
-              </div>
+          <form onSubmit={addEmployee} className="bg-[#003460] rounded p-4 mb-4 flex gap-3 items-end flex-wrap">
+            <div>
+              <label className="block text-blue-200 text-xs mb-1">Full Name</label>
+              <input className={inputClass} placeholder="John Smith" value={newName} onChange={(e) => setNewName(e.target.value)} />
             </div>
-            <button
-              type="submit"
-              className="mt-3 bg-green-600 hover:bg-green-700 px-6 py-2 rounded-lg text-sm"
-            >
+            <div>
+              <label className="block text-blue-200 text-xs mb-1">Phone Number</label>
+              <input className={inputClass} placeholder="5551234567" value={newPhone} onChange={(e) => setNewPhone(e.target.value)} />
+            </div>
+            <button type="submit" className="px-4 py-2 bg-green-600 hover:bg-green-700 rounded text-sm font-medium">
               Add Employee
             </button>
           </form>
         )}
 
-        {/* Employees Table */}
-        {loading ? (
-          <p className="text-blue-200 text-center py-8">Loading...</p>
-        ) : (
-          <div className="bg-[#003460] rounded-lg overflow-hidden">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-blue-700/30">
-                  <th className="text-left p-3 text-blue-200">Employee ID</th>
-                  <th className="text-left p-3 text-blue-200">Name</th>
-                  <th className="text-left p-3 text-blue-200">Role</th>
-                  <th className="text-left p-3 text-blue-200">Status</th>
-                  <th className="text-left p-3 text-blue-200">Added</th>
-                  <th className="text-left p-3 text-blue-200">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {employees.map((emp) => (
-                  <tr
-                    key={emp.id}
-                    className={`border-b border-blue-700/30 ${
-                      !emp.active ? "opacity-50" : ""
-                    }`}
-                  >
-                    <td className="p-3 font-mono">{emp.employee_id}</td>
-                    <td className="p-3 font-medium">{emp.name}</td>
-                    <td className="p-3">
-                      <span
-                        className={`px-2 py-1 rounded text-xs ${
-                          emp.role === "worker"
-                            ? "bg-[#00467F] text-blue-100"
-                            : emp.role === "manager"
-                            ? "bg-blue-900 text-blue-300"
-                            : "bg-purple-900 text-purple-300"
-                        }`}
-                      >
-                        {emp.role}
-                      </span>
-                    </td>
-                    <td className="p-3">
-                      <span
-                        className={`text-xs ${
-                          emp.active ? "text-green-400" : "text-red-400"
-                        }`}
-                      >
-                        {emp.active ? "Active" : "Inactive"}
-                      </span>
-                    </td>
-                    <td className="p-3 text-blue-200 text-xs">
-                      {new Date(emp.created_at).toLocaleDateString()}
-                    </td>
-                    <td className="p-3">
+        {/* Search */}
+        <div className="mb-4">
+          <input
+            className={inputClass + " w-full md:w-80"}
+            placeholder="Search by name, phone, or ID..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+
+        {/* Employee List */}
+        <div className="bg-[#003460] rounded overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b border-blue-700/30 text-blue-200">
+                <th className="p-3 text-left">ID</th>
+                <th className="p-3 text-left">Name</th>
+                <th className="p-3 text-left">Phone</th>
+                <th className="p-3 text-center">Status</th>
+                <th className="p-3 text-center">Password</th>
+                <th className="p-3 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((emp) => (
+                <tr key={emp.id} className={`border-b border-blue-700/30 ${!emp.active ? "opacity-50" : ""} hover:bg-[#00467F]/30`}>
+                  <td className="p-3 font-mono text-blue-300">{emp.employee_id}</td>
+                  <td className="p-3 font-medium">{emp.name}</td>
+                  <td className="p-3 text-blue-200">
+                    {emp.phone ? `(${emp.phone.slice(0, 3)}) ${emp.phone.slice(3, 6)}-${emp.phone.slice(6)}` : "—"}
+                  </td>
+                  <td className="p-3 text-center">
+                    <span className={`px-2 py-0.5 rounded text-xs ${emp.active ? "bg-green-900 text-green-300" : "bg-red-900 text-red-300"}`}>
+                      {emp.active ? "Active" : "Disabled"}
+                    </span>
+                  </td>
+                  <td className="p-3 text-center">
+                    <span className={`text-xs ${emp.has_password ? "text-green-400" : "text-yellow-400"}`}>
+                      {emp.has_password ? "Set" : "Pending"}
+                    </span>
+                  </td>
+                  <td className="p-3 text-right">
+                    <div className="flex gap-1 justify-end">
                       <button
                         onClick={() => toggleActive(emp)}
-                        className={`text-xs ${
-                          emp.active
-                            ? "text-red-400 hover:text-red-300"
-                            : "text-green-400 hover:text-green-300"
-                        }`}
+                        className={`px-2 py-0.5 rounded text-xs ${emp.active ? "bg-red-700 hover:bg-red-600" : "bg-green-700 hover:bg-green-600"}`}
                       >
-                        {emp.active ? "Deactivate" : "Reactivate"}
+                        {emp.active ? "Disable" : "Enable"}
                       </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {employees.length === 0 && (
-              <p className="text-blue-300/60 text-center py-8">
-                No employees yet. Add your first one above.
-              </p>
-            )}
-          </div>
-        )}
+                      {emp.has_password && (
+                        <button
+                          onClick={() => resetPassword(emp)}
+                          className="px-2 py-0.5 bg-gray-600 hover:bg-gray-500 rounded text-xs"
+                        >
+                          Reset PW
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {loading && <p className="p-6 text-center text-blue-300/60">Loading...</p>}
+          {!loading && filtered.length === 0 && <p className="p-6 text-center text-blue-300/60">No employees found</p>}
+        </div>
       </div>
     </div>
   );
