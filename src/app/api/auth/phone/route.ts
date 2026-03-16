@@ -2,123 +2,192 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import bcrypt from "bcryptjs";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+function getSupabase() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!
+  );
+}
+
+function normalize(phone: string): string {
+  return phone.replace(/\D/g, "");
+}
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { action, phone, pin } = body;
+    const { action } = body;
+    const supabase = getSupabase();
 
-    if (!phone) return NextResponse.json({ error: "Phone number is required" }, { status: 400 });
-
-    const normalizedPhone = phone.replace(/\D/g, "");
-
+    // LOOKUP: check if phone exists and has a PIN
     if (action === "lookup") {
-      const { data: employees, error } = await supabase
+      const phone = normalize(body.phone || "");
+      if (phone.length < 10) {
+        return NextResponse.json({ error: "Invalid phone" }, { status: 400 });
+      }
+      const { data: employees } = await supabase
         .from("employees")
-        .select("employee_id, name, phone, active, pin_hash, approved")
-        .eq("phone", normalizedPhone);
+        .select("id, name, pin_hash, active, approved")
+        .eq("phone", phone);
 
-      if (error || !employees || employees.length === 0) {
-        return NextResponse.json({ error: "Phone number not found. Contact your administrator." }, { status: 404 });
+      const emp = (employees || []).find((e) => e.active && e.approved);
+      if (!emp) {
+        // Check if pending approval
+        const pending = (employees || []).find((e) => e.active && !e.approved);
+        if (pending) {
+          return NextResponse.json({
+            found: true,
+            hasPin: false,
+            pending: true,
+            message: "Your registration is pending admin approval.",
+          });
+        }
+        return NextResponse.json({ found: false });
       }
-
-      const employee = employees.find((e) => e.active) || employees[0];
-
-      if (!employee.active) {
-        return NextResponse.json({ error: "Access denied. Your account has been deactivated." }, { status: 403 });
-      }
-
-      const hasPin = !!employee.pin_hash && employee.pin_hash !== "$2a$10$placeholder";
-      const isApproved = employee.approved === true;
-
       return NextResponse.json({
-        employee_id: employee.employee_id,
-        name: employee.name,
-        has_pin: hasPin,
-        approved: isApproved,
-        pending: hasPin && !isApproved,
+        found: true,
+        hasPin: !!emp.pin_hash && emp.pin_hash !== "" && !emp.pin_hash.startsWith("$2a$10$placeholder"),
+        name: emp.name,
       });
     }
 
-    if (action === "register") {
-      if (!pin || pin.length !== 4 || !/^\d{4}$/.test(pin)) {
-        return NextResponse.json({ error: "PIN must be exactly 4 digits" }, { status: 400 });
+    // LOGIN: verify phone + PIN
+    if (action === "login") {
+      const phone = normalize(body.phone || "");
+      const pin = body.pin || "";
+      if (!phone || !pin) {
+        return NextResponse.json({ error: "Phone and PIN required" }, { status: 400 });
       }
-
-      const { data: employees, error: findErr } = await supabase
+      const { data: employees } = await supabase
         .from("employees")
         .select("id, employee_id, name, active, pin_hash, approved")
-        .eq("phone", normalizedPhone);
+        .eq("phone", phone);
 
-      if (findErr || !employees || employees.length === 0) {
-        return NextResponse.json({ error: "Phone number not found" }, { status: 404 });
+      const emp = (employees || []).find((e) => e.active && e.approved);
+      if (!emp) {
+        return NextResponse.json({ error: "Account not found or not approved" }, { status: 401 });
+      }
+      if (!emp.pin_hash || emp.pin_hash.startsWith("$2a$10$placeholder")) {
+        return NextResponse.json({ error: "PIN not set. Please set your PIN first." }, { status: 401 });
+      }
+      const valid = await bcrypt.compare(pin, emp.pin_hash);
+      if (!valid) {
+        return NextResponse.json({ error: "Wrong PIN" }, { status: 401 });
       }
 
-      const employee = employees.find((e) => e.active) || employees[0];
-
-      if (!employee.active) {
-        return NextResponse.json({ error: "Access denied. Your account has been deactivated." }, { status: 403 });
-      }
-
-      if (employee.pin_hash && employee.pin_hash !== "$2a$10$placeholder" && employee.approved) {
-        return NextResponse.json({ error: "PIN already set. Use login instead." }, { status: 400 });
-      }
-
-      const hash = await bcrypt.hash(pin, 10);
-      const updates: Record<string, unknown> = { pin_hash: hash };
-      if (employee.approved !== true) updates.approved = false;
-
-      const { error: updateErr } = await supabase.from("employees").update(updates).eq("id", employee.id);
-      if (updateErr) return NextResponse.json({ error: "Failed to set PIN" }, { status: 500 });
-
-      if (employee.approved === true) {
-        const response = NextResponse.json({ success: true, employee_id: employee.employee_id, name: employee.name, logged_in: true });
-        response.cookies.set("employee_id", employee.employee_id, { httpOnly: true, secure: true, sameSite: "strict", maxAge: 60 * 60 * 24 * 30 });
-        response.cookies.set("employee_name", employee.name, { httpOnly: true, secure: true, sameSite: "strict", maxAge: 60 * 60 * 24 * 30 });
-        return response;
-      }
-
-      return NextResponse.json({ success: true, pending_approval: true, message: "PIN set! Your registration is pending admin approval." });
+      const response = NextResponse.json({
+        success: true,
+        employee: { id: emp.id, employee_id: emp.employee_id, name: emp.name },
+      });
+      response.cookies.set("employee_id", emp.employee_id, {
+        path: "/",
+        maxAge: 12 * 60 * 60,
+      });
+      response.cookies.set("employee_name", emp.name, {
+        path: "/",
+        maxAge: 12 * 60 * 60,
+      });
+      response.cookies.set("employee_uuid", emp.id, {
+        path: "/",
+        maxAge: 12 * 60 * 60,
+      });
+      return response;
     }
 
-    if (action === "login") {
-      if (!pin) return NextResponse.json({ error: "PIN is required" }, { status: 400 });
+    // REGISTER: new employee (name + phone + pin)
+    if (action === "register") {
+      const phone = normalize(body.phone || "");
+      const name = (body.name || "").trim();
+      const pin = body.pin || "";
+      if (!phone || !name || pin.length !== 4) {
+        return NextResponse.json({ error: "Name, phone, and 4-digit PIN required" }, { status: 400 });
+      }
 
-      const { data: employees, error: findErr } = await supabase
+      // Check if phone already exists
+      const { data: existing } = await supabase
         .from("employees")
-        .select("id, employee_id, name, active, pin_hash, approved")
-        .eq("phone", normalizedPhone);
+        .select("id, approved, active")
+        .eq("phone", phone);
 
-      if (findErr || !employees || employees.length === 0) {
-        return NextResponse.json({ error: "Phone number not found" }, { status: 404 });
+      if (existing && existing.length > 0) {
+        const active = existing.find((e) => e.active);
+        if (active) {
+          return NextResponse.json({ error: "Phone number already registered" }, { status: 400 });
+        }
       }
 
-      const employee = employees.find((e) => e.active) || employees[0];
+      const pinHash = await bcrypt.hash(pin, 10);
+      const empId = "EMP" + Date.now().toString().slice(-6);
 
-      if (!employee.active) return NextResponse.json({ error: "Access denied. Your account has been deactivated." }, { status: 403 });
+      const { error: insertErr } = await supabase.from("employees").insert({
+        employee_id: empId,
+        name,
+        phone,
+        pin_hash: pinHash,
+        role: "worker",
+        active: true,
+        approved: false,
+      });
 
-      if (!employee.pin_hash || employee.pin_hash === "$2a$10$placeholder") {
-        return NextResponse.json({ error: "Please set up your PIN first", needs_registration: true }, { status: 400 });
+      if (insertErr) {
+        return NextResponse.json({ error: "Registration failed: " + insertErr.message }, { status: 500 });
       }
 
-      if (!employee.approved) return NextResponse.json({ error: "Your registration is pending admin approval." }, { status: 403 });
+      return NextResponse.json({ success: true, pending: true });
+    }
 
-      const valid = await bcrypt.compare(pin, employee.pin_hash);
-      if (!valid) return NextResponse.json({ error: "Incorrect PIN" }, { status: 401 });
+    // SET-PIN: for approved employees who don't have a PIN yet
+    if (action === "set-pin") {
+      const phone = normalize(body.phone || "");
+      const pin = body.pin || "";
+      if (!phone || pin.length !== 4) {
+        return NextResponse.json({ error: "Phone and 4-digit PIN required" }, { status: 400 });
+      }
 
-      const response = NextResponse.json({ success: true, employee_id: employee.employee_id, name: employee.name });
-      response.cookies.set("employee_id", employee.employee_id, { httpOnly: true, secure: true, sameSite: "strict", maxAge: 60 * 60 * 24 * 30 });
-      response.cookies.set("employee_name", employee.name, { httpOnly: true, secure: true, sameSite: "strict", maxAge: 60 * 60 * 24 * 30 });
+      const { data: employees } = await supabase
+        .from("employees")
+        .select("id, employee_id, name, active, approved, pin_hash")
+        .eq("phone", phone);
+
+      const emp = (employees || []).find((e) => e.active && e.approved);
+      if (!emp) {
+        return NextResponse.json({ error: "Account not found or not approved" }, { status: 401 });
+      }
+
+      const pinHash = await bcrypt.hash(pin, 10);
+      const { error: updateErr } = await supabase
+        .from("employees")
+        .update({ pin_hash: pinHash })
+        .eq("id", emp.id);
+
+      if (updateErr) {
+        return NextResponse.json({ error: "Failed to set PIN" }, { status: 500 });
+      }
+
+      const response = NextResponse.json({
+        success: true,
+        employee: { id: emp.id, employee_id: emp.employee_id, name: emp.name },
+      });
+      response.cookies.set("employee_id", emp.employee_id, {
+        path: "/",
+        maxAge: 12 * 60 * 60,
+      });
+      response.cookies.set("employee_name", emp.name, {
+        path: "/",
+        maxAge: 12 * 60 * 60,
+      });
+      response.cookies.set("employee_uuid", emp.id, {
+        path: "/",
+        maxAge: 12 * 60 * 60,
+      });
       return response;
     }
 
     return NextResponse.json({ error: "Invalid action" }, { status: 400 });
   } catch (err) {
-    console.error("Auth phone error:", err);
-    return NextResponse.json({ error: "Server error" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Server error: " + (err instanceof Error ? err.message : "unknown") },
+      { status: 500 }
+    );
   }
 }
