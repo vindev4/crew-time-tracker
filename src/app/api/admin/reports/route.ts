@@ -38,10 +38,10 @@ export async function GET(request: NextRequest) {
   if (empIds.length > 0) {
     const { data: emps } = await supabase
       .from("employees")
-      .select("employee_id, name")
-      .in("employee_id", empIds);
+      .select("id, employee_id, name")
+      .in("id", empIds);
     if (emps) {
-      employeeMap = Object.fromEntries(emps.map((e) => [e.employee_id, e.name]));
+      employeeMap = Object.fromEntries(emps.map((e) => [e.id, e.name]));
     }
   }
 
