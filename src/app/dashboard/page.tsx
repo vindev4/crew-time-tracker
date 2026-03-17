@@ -33,6 +33,16 @@ export default function DashboardPage() {
     setEmpId(decodeURIComponent(id));
   }, [router]);
 
+  function timeOptions() {
+    const opts: string[] = [];
+    for (let h = 0; h < 24; h++) {
+      for (let m = 0; m < 60; m += 15) {
+        opts.push(String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0"));
+      }
+    }
+    return opts;
+  }
+
   function calcHours(): string {
     if (!startTime || !stopTime) return "0.00";
     const [sh, sm] = startTime.split(":").map(Number);
@@ -152,21 +162,27 @@ export default function DashboardPage() {
           <div className="grid grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block text-sm text-blue-200 mb-1">Start Time</label>
-              <input
-                type="time"
+              <select
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
                 className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#F37C05] focus:ring-1 focus:ring-[#F37C05]"
-              />
+              >
+                {timeOptions().map((t) => (
+                  <option key={"s" + t} value={t}>{t}</option>
+                ))}
+              </select>
             </div>
             <div>
               <label className="block text-sm text-blue-200 mb-1">Stop Time</label>
-              <input
-                type="time"
+              <select
                 value={stopTime}
                 onChange={(e) => setStopTime(e.target.value)}
                 className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#F37C05] focus:ring-1 focus:ring-[#F37C05]"
-              />
+              >
+                {timeOptions().map((t) => (
+                  <option key={"e" + t} value={t}>{t}</option>
+                ))}
+              </select>
             </div>
           </div>
 
