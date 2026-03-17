@@ -14,9 +14,11 @@ export async function POST(request: NextRequest) {
     if (!employeeId) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
     const body = await request.json();
-    const { report_date, start_time, stop_time, job_location, notes, hours_worked } = body;
+    const report_date = body.report_date || body.date;
+    const { start_time, stop_time, job_location, notes, hours_worked } = body;
 
     if (!report_date || !start_time || !stop_time || !job_location) {
+      console.error("Validation failed:", { report_date, start_time, stop_time, job_location, bodyKeys: Object.keys(body) });
       return NextResponse.json({ error: "Date, start time, stop time, and job location are required" }, { status: 400 });
     }
 
