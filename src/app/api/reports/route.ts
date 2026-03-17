@@ -10,22 +10,22 @@ const supabase = createClient(
 export async function POST(request: NextRequest) {
   try {
     const cookieStore = cookies();
+    const employeeUuid = cookieStore.get("employee_uuid")?.value;
     const employeeId = cookieStore.get("employee_id")?.value;
-    if (!employeeId) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    if (!employeeUuid && !employeeId) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
     const body = await request.json();
     const report_date = body.report_date || body.date;
     const { start_time, stop_time, job_location, notes, hours_worked } = body;
 
     if (!report_date || !start_time || !stop_time || !job_location) {
-      console.error("Validation failed:", { report_date, start_time, stop_time, job_location, bodyKeys: Object.keys(body) });
       return NextResponse.json({ error: "Date, start time, stop time, and job location are required" }, { status: 400 });
     }
 
     const { data, error } = await supabase
       .from("daily_reports")
       .insert({
-        employee_id: employeeId,
+        employee_id: employeeUuid || employeeId,
         report_date,
         start_time,
         stop_time,
@@ -52,13 +52,14 @@ export async function POST(request: NextRequest) {
 export async function GET() {
   try {
     const cookieStore = cookies();
+    const employeeUuid = cookieStore.get("employee_uuid")?.value;
     const employeeId = cookieStore.get("employee_id")?.value;
-    if (!employeeId) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
+    if (!employeeUuid && !employeeId) return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
 
     const { data, error } = await supabase
       .from("daily_reports")
       .select("id, report_date, start_time, stop_time, job_location, notes, hours_worked, submitted_at")
-      .eq("employee_id", employeeId)
+      .eq("employee_id", employeeUuid || employeeId)
       .order("report_date", { ascending: false })
       .limit(30);
 
