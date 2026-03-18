@@ -34,10 +34,14 @@ export default function DashboardPage() {
   }, [router]);
 
   function timeOptions() {
-    const opts: string[] = [];
+    const opts: { value: string; label: string }[] = [];
     for (let h = 0; h < 24; h++) {
       for (let m = 0; m < 60; m += 15) {
-        opts.push(String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0"));
+        const val = String(h).padStart(2, "0") + ":" + String(m).padStart(2, "0");
+        const hour12 = h === 0 ? 12 : h > 12 ? h - 12 : h;
+        const ampm = h < 12 ? "AM" : "PM";
+        const label = hour12 + ":" + String(m).padStart(2, "0") + " " + ampm;
+        opts.push({ value: val, label });
       }
     }
     return opts;
@@ -168,7 +172,7 @@ export default function DashboardPage() {
                 className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#F37C05] focus:ring-1 focus:ring-[#F37C05]"
               >
                 {timeOptions().map((t) => (
-                  <option key={"s" + t} value={t}>{t}</option>
+                  <option key={"s" + t.value} value={t.value}>{t.label}</option>
                 ))}
               </select>
             </div>
@@ -180,7 +184,7 @@ export default function DashboardPage() {
                 className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#F37C05] focus:ring-1 focus:ring-[#F37C05]"
               >
                 {timeOptions().map((t) => (
-                  <option key={"e" + t} value={t}>{t}</option>
+                  <option key={"e" + t.value} value={t.value}>{t.label}</option>
                 ))}
               </select>
             </div>
