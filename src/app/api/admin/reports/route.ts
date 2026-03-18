@@ -29,16 +29,14 @@ export async function GET(req: NextRequest) {
   const supabase = getServiceSupabase();
   const url = req.nextUrl;
 
-  // Filter params
   const startDate = url.searchParams.get("start");
   const endDate = url.searchParams.get("end");
-  const employeeIds = url.searchParams.get("employees"); // comma-separated UUIDs
-  const locations = url.searchParams.get("locations"); // comma-separated strings
+  const employeeIds = url.searchParams.get("employees");
+  const locations = url.searchParams.get("locations");
   const sortCol = url.searchParams.get("sort") || "submitted_at";
-  const sortDir = url.searchParams.get("dir") === "asc" ? true : false; // true = ascending
+  const sortDir = url.searchParams.get("dir") === "asc" ? true : false;
   const overtimeOnly = url.searchParams.get("overtime") === "true";
 
-  // Build query
   let query = supabase
     .from("daily_reports")
     .select("*, employees!inner(name, employee_id)")
@@ -69,7 +67,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // Flatten employee info
   const flatReports = (reports || []).map((r: any) => ({
     id: r.id,
     employee_id: r.employee_id,
@@ -84,22 +81,16 @@ export async function GET(req: NextRequest) {
     submitted_at: r.submitted_at,
   }));
 
-  // Overtime calculation: for each employee in results, compute weekly hours
-  // Get unique employee IDs in results
-  const uniqueEmpIds = [...new Set(flatReports.map((r: any) => r.employee_id))];
+  const uniqueEmpIds = Array.from(new Set(flatReports.map((r: any) => r.employee_id)));
 
-  // Determine date range needed for full week coverage
-  // Find min/max dates in results, extend to cover full Mon-Sun weeks
-  let overtimeMap: Record<string, Record<string, number>> = {}; // empId -> weekKey -> totalHours
+  let overtimeMap: Record<string, Record<string, number>> = {};
 
   if (uniqueEmpIds.length > 0) {
-    // Get all dates in result set
     const allDates = flatReports.map((r: any) => r.report_date).filter(Boolean);
     if (allDates.length > 0) {
       const minDate = new Date(allDates.sort()[0]);
       const maxDate = new Date(allDates.sort()[allDates.length - 1]);
 
-      // Extend to cover full weeks (Monday start)
       const minDay = minDate.getDay();
       const mondayOffset = minDay === 0 ? 6 : minDay - 1;
       const weekStart = new Date(minDate);
@@ -113,7 +104,6 @@ export async function GET(req: NextRequest) {
       const wsStr = weekStart.toISOString().split("T")[0];
       const weStr = weekEnd.toISOString().split("T")[0];
 
-      // Fetch ALL reports for these employees in the full week range
       const { data: weekData } = await supabase
         .from("daily_reports")
         .select("employee_id, report_date, hours_worked")
@@ -138,7 +128,6 @@ export async function GET(req: NextRequest) {
     }
   }
 
-  // Annotate reports with overtime info
   const annotated = flatReports.map((r: any) => {
     const d = new Date(r.report_date);
     const day = d.getDay();
@@ -154,10 +143,8 @@ export async function GET(req: NextRequest) {
     };
   });
 
-  // If overtime-only filter, remove non-overtime rows
   const finalReports = overtimeOnly ? annotated.filter((r: any) => r.is_overtime) : annotated;
 
-  // Also fetch distinct employees and locations for filter dropdowns
   const { data: allEmployees } = await supabase
     .from("employees")
     .select("id, name, employee_id")
@@ -169,7 +156,7 @@ export async function GET(req: NextRequest) {
     .select("job_location")
     .not("job_location", "is", null);
 
-  const uniqueLocations = [...new Set((allLocations || []).map((l: any) => l.job_location).filter(Boolean))].sort();
+  const uniqueLocations = Array.from(new Set((allLocations || []).map((l: any) => l.job_location).filter(Boolean))).sort();
 
   return NextResponse.json({
     reports: finalReports,
