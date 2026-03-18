@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
 
     // Also set admin_authenticated for legacy API routes
     response.cookies.set("admin_authenticated", "true", {
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 8 * 60 * 60,
