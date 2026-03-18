@@ -111,16 +111,16 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-[#00467F]">
       {/* Header */}
-      <div className="bg-[#003460] border-b border-blue-700/30 px-4 py-3">
+      <div className="bg-[#003460] border-b border-blue-700/30 px-3 sm:px-4 py-2 sm:py-3">
         <div className="max-w-lg mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img
               src="https://duraport.net/wp-content/uploads/2026/01/duraport-logo.svg"
               alt="DuraPort"
-              className="h-8"
+              className="h-6 sm:h-8"
             />
             <div>
-              <div className="text-white font-semibold text-sm">{empName}</div>
+              <div className="text-white font-semibold text-xs sm:text-sm">{empName}</div>
               <div className="text-blue-300/60 text-xs">Daily Timesheet</div>
             </div>
           </div>
@@ -143,9 +143,9 @@ export default function DashboardPage() {
 
         <form
           onSubmit={handleSubmit}
-          className="bg-[#003460] rounded-xl p-6 border border-blue-700/30 shadow-xl"
+          className="bg-[#003460] rounded-xl p-4 sm:p-6 border border-blue-700/30 shadow-xl"
         >
-          <h2 className="text-white text-lg font-semibold mb-4">Submit Daily Timesheet</h2>
+          <h2 className="text-white text-base sm:text-lg font-semibold mb-4">Submit Daily Timesheet</h2>
 
           {error && (
             <div className="bg-red-900/50 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-4">
@@ -154,22 +154,22 @@ export default function DashboardPage() {
           )}
 
           <div className="mb-4">
-            <label className="block text-sm text-blue-200 mb-1">Date</label>
+            <label className="block text-xs sm:text-sm text-blue-200 mb-1">Date</label>
             <input
               type="date"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#F37C05] focus:ring-1 focus:ring-[#F37C05]"
+              className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-2 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-white focus:outline-none focus:border-[#F37C05] focus:ring-1 focus:ring-[#F37C05]"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-4">
             <div>
-              <label className="block text-sm text-blue-200 mb-1">Start Time</label>
+              <label className="block text-xs sm:text-sm text-blue-200 mb-1">Start Time</label>
               <select
                 value={startTime}
                 onChange={(e) => setStartTime(e.target.value)}
-                className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#F37C05] focus:ring-1 focus:ring-[#F37C05]"
+                className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-2 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-white focus:outline-none focus:border-[#F37C05] focus:ring-1 focus:ring-[#F37C05]"
               >
                 {timeOptions().map((t) => (
                   <option key={"s" + t.value} value={t.value}>{t.label}</option>
@@ -177,11 +177,11 @@ export default function DashboardPage() {
               </select>
             </div>
             <div>
-              <label className="block text-sm text-blue-200 mb-1">Stop Time</label>
+              <label className="block text-xs sm:text-sm text-blue-200 mb-1">Stop Time</label>
               <select
                 value={stopTime}
                 onChange={(e) => setStopTime(e.target.value)}
-                className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-[#F37C05] focus:ring-1 focus:ring-[#F37C05]"
+                className="w-full bg-[#00467F] border border-blue-600/50 rounded-lg px-2 sm:px-4 py-2 sm:py-3 text-sm sm:text-base text-white focus:outline-none focus:border-[#F37C05] focus:ring-1 focus:ring-[#F37C05]"
               >
                 {timeOptions().map((t) => (
                   <option key={"e" + t.value} value={t.value}>{t.label}</option>
@@ -196,7 +196,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="mb-4">
-            <label className="block text-sm text-blue-200 mb-1">Job / Location</label>
+            <label className="block text-xs sm:text-sm text-blue-200 mb-1">Job / Location</label>
             <input
               type="text"
               value={jobLocation}
@@ -207,7 +207,7 @@ export default function DashboardPage() {
           </div>
 
           <div className="mb-6">
-            <label className="block text-sm text-blue-200 mb-1">Notes (optional)</label>
+            <label className="block text-xs sm:text-sm text-blue-200 mb-1">Notes (optional)</label>
             <textarea
               value={notes}
               onChange={(e) => setNotes(e.target.value)}
