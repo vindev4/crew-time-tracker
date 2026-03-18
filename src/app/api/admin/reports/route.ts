@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { createClient } from "@supabase/supabase-js";
+import { getAdminFromCookies } from "@/lib/auth";
 
 function getServiceSupabase() {
   return createClient(
@@ -9,34 +9,25 @@ function getServiceSupabase() {
   );
 }
 
-function verifyAdmin(cookieStore: ReturnType<typeof cookies>) {
-  const token = cookieStore.get("admin_token")?.value;
-  if (!token) return false;
-  try {
-    const payload = JSON.parse(atob(token.split(".")[1]));
-    return payload.role === "admin" && payload.exp * 1000 > Date.now();
-  } catch {
-    return false;
-  }
-}
-
 export async function GET(req: NextRequest) {
-  const cookieStore = cookies();
-  if (!verifyAdmin(cookieStore)) {
+  const admin = await getAdminFromCookies();
+  if (!admin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const supabase = getServiceSupabase();
   const url = req.nextUrl;
 
+  // Filter params
   const startDate = url.searchParams.get("start");
   const endDate = url.searchParams.get("end");
-  const employeeIds = url.searchParams.get("employees");
-  const locations = url.searchParams.get("locations");
+  const employeeIds = url.searchParams.get("employees"); // comma-separated UUIDs
+  const locations = url.searchParams.get("locations"); // comma-separated strings
   const sortCol = url.searchParams.get("sort") || "submitted_at";
-  const sortDir = url.searchParams.get("dir") === "asc" ? true : false;
+  const sortDir = url.searchParams.get("dir") === "asc" ? true : false; // true = ascending
   const overtimeOnly = url.searchParams.get("overtime") === "true";
 
+  // Build query
   let query = supabase
     .from("daily_reports")
     .select("*, employees!inner(name, employee_id)")
@@ -67,6 +58,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
+  // Flatten employee info
   const flatReports = (reports || []).map((r: any) => ({
     id: r.id,
     employee_id: r.employee_id,
@@ -81,16 +73,22 @@ export async function GET(req: NextRequest) {
     submitted_at: r.submitted_at,
   }));
 
+  // Overtime calculation: for each employee in results, compute weekly hours
+  // Get unique employee IDs in results
   const uniqueEmpIds = Array.from(new Set(flatReports.map((r: any) => r.employee_id)));
 
-  let overtimeMap: Record<string, Record<string, number>> = {};
+  // Determine date range needed for full week coverage
+  // Find min/max dates in results, extend to cover full Mon-Sun weeks
+  let overtimeMap: Record<string, Record<string, number>> = {}; // empId -> weekKey -> totalHours
 
   if (uniqueEmpIds.length > 0) {
+    // Get all dates in result set
     const allDates = flatReports.map((r: any) => r.report_date).filter(Boolean);
     if (allDates.length > 0) {
       const minDate = new Date(allDates.sort()[0]);
       const maxDate = new Date(allDates.sort()[allDates.length - 1]);
 
+      // Extend to cover full weeks (Monday start)
       const minDay = minDate.getDay();
       const mondayOffset = minDay === 0 ? 6 : minDay - 1;
       const weekStart = new Date(minDate);
@@ -104,6 +102,7 @@ export async function GET(req: NextRequest) {
       const wsStr = weekStart.toISOString().split("T")[0];
       const weStr = weekEnd.toISOString().split("T")[0];
 
+      // Fetch ALL reports for these employees in the full week range
       const { data: weekData } = await supabase
         .from("daily_reports")
         .select("employee_id, report_date, hours_worked")
@@ -128,6 +127,7 @@ export async function GET(req: NextRequest) {
     }
   }
 
+  // Annotate reports with overtime info
   const annotated = flatReports.map((r: any) => {
     const d = new Date(r.report_date);
     const day = d.getDay();
@@ -143,8 +143,10 @@ export async function GET(req: NextRequest) {
     };
   });
 
+  // If overtime-only filter, remove non-overtime rows
   const finalReports = overtimeOnly ? annotated.filter((r: any) => r.is_overtime) : annotated;
 
+  // Also fetch distinct employees and locations for filter dropdowns
   const { data: allEmployees } = await supabase
     .from("employees")
     .select("id, name, employee_id")
@@ -166,8 +168,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function PATCH(req: NextRequest) {
-  const cookieStore = cookies();
-  if (!verifyAdmin(cookieStore)) {
+  const admin = await getAdminFromCookies();
+  if (!admin) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
