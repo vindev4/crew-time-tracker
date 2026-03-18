@@ -3,12 +3,12 @@
 import { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import { useRouter } from "next/navigation";
 
-/* ── i18n ────────────────────────────────────────────────────────── */
+/* ââ i18n ââââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 const t = {
   en: {
     workTickets: "Work Tickets",
     signOut: "Sign Out",
-    loading: "Loading…",
+    loading: "Loadingâ¦",
     noReports: "No reports found",
     filters: "Filters",
     dateRange: "Date Range",
@@ -27,7 +27,7 @@ const t = {
     clearAll: "Clear All",
     savedFilters: "Saved Filters",
     saveCurrentFilter: "Save Current",
-    filterName: "Filter name…",
+    filterName: "Filter nameâ¦",
     save: "Save",
     date: "Date",
     employee: "Employee",
@@ -54,8 +54,8 @@ const t = {
   },
   es: {
     workTickets: "Boletas de Trabajo",
-    signOut: "Cerrar Sesión",
-    loading: "Cargando…",
+    signOut: "Cerrar SesiÃ³n",
+    loading: "Cargandoâ¦",
     noReports: "No se encontraron reportes",
     filters: "Filtros",
     dateRange: "Rango de Fechas",
@@ -74,7 +74,7 @@ const t = {
     clearAll: "Limpiar Todo",
     savedFilters: "Filtros Guardados",
     saveCurrentFilter: "Guardar Actual",
-    filterName: "Nombre del filtro…",
+    filterName: "Nombre del filtroâ¦",
     save: "Guardar",
     date: "Fecha",
     employee: "Empleado",
@@ -82,7 +82,7 @@ const t = {
     stopTime: "Fin",
     hours: "Horas",
     weekHrs: "Hrs Sem",
-    jobLocation: "Trabajo / Ubicación",
+    jobLocation: "Trabajo / UbicaciÃ³n",
     notes: "Notas",
     submitted: "Enviado",
     actions: "Acciones",
@@ -101,7 +101,7 @@ const t = {
   },
 };
 
-/* ── Types ───────────────────────────────────────────────────────── */
+/* ââ Types âââââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 interface Report {
   id: string;
   employee_id: string;
@@ -134,7 +134,7 @@ interface SavedFilter {
   overtimeOnly: boolean;
 }
 
-/* ── Helpers ─────────────────────────────────────────────────────── */
+/* ââ Helpers âââââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 function todayStr() {
   return new Date().toISOString().split("T")[0];
 }
@@ -193,7 +193,7 @@ function timeOptions() {
   return opts;
 }
 
-/* ── Component ───────────────────────────────────────────────────── */
+/* ââ Component âââââââââââââââââââââââââââââââââââââââââââââââââââââ */
 export default function AdminDashboard() {
   const router = useRouter();
   const [lang, setLang] = useState<"en" | "es">("en");
@@ -230,8 +230,8 @@ export default function AdminDashboard() {
   useEffect(() => {
     const savedLang = document.cookie.split("; ").find((c) => c.startsWith("lang="))?.split("=")[1];
     if (savedLang === "es") setLang("es");
-    const auth = document.cookie.split("; ").find((c) => c.startsWith("admin_authenticated="));
-    if (!auth) { router.push("/login"); return; }
+    // Check admin auth via API (cookie is httpOnly, can't read from JS)
+      fetch("/time/api/admin/reports?limit=1").then((r) => { if (r.status === 401) router.push("/admin/login"); }).catch(() => router.push("/admin/login"));
     try {
       const sf = localStorage.getItem("admin_saved_filters");
       if (sf) setSavedFilters(JSON.parse(sf));
@@ -305,8 +305,8 @@ export default function AdminDashboard() {
   }
 
   function sortArrow(col: string) {
-    if (sortCol !== col) return " ↕";
-    return sortDir === "asc" ? " ↑" : " ↓";
+    if (sortCol !== col) return " â";
+    return sortDir === "asc" ? " â" : " â";
   }
 
   function clearFilters() {
@@ -446,7 +446,7 @@ export default function AdminDashboard() {
   function handleLogout() {
     document.cookie = "admin_authenticated=; path=/; max-age=0";
     document.cookie = "admin_token=; path=/; max-age=0";
-    router.push("/login");
+    router.push("/admin/login");
   }
 
   const tOpts = timeOptions();
@@ -485,7 +485,7 @@ export default function AdminDashboard() {
             <svg className={`w-3 h-3 transition-transform ${filtersOpen ? "rotate-90" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
             {filtersOpen ? s.hideFilters : s.showFilters}
             {(selectedEmployees.length > 0 || selectedLocations.length > 0 || overtimeOnly || datePreset !== "thisWeek") && (
-              <span className="bg-[#F37C05]/20 text-[#F37C05] px-1.5 py-0.5 rounded text-[10px]">●</span>
+              <span className="bg-[#F37C05]/20 text-[#F37C05] px-1.5 py-0.5 rounded text-[10px]">â</span>
             )}
           </button>
         </div>
@@ -543,7 +543,7 @@ export default function AdminDashboard() {
                       <span className="truncate">{emp.name}</span>
                     </label>
                   ))}
-                  {employees.length === 0 && <div className="px-3 py-2 text-white/30 text-xs">—</div>}
+                  {employees.length === 0 && <div className="px-3 py-2 text-white/30 text-xs">â</div>}
                 </div>
               )}
             </div>
@@ -566,7 +566,7 @@ export default function AdminDashboard() {
                       <span className="truncate">{loc}</span>
                     </label>
                   ))}
-                  {locations.length === 0 && <div className="px-3 py-2 text-white/30 text-xs">—</div>}
+                  {locations.length === 0 && <div className="px-3 py-2 text-white/30 text-xs">â</div>}
                 </div>
               )}
             </div>
@@ -609,7 +609,7 @@ export default function AdminDashboard() {
             {savedFilters.map((f, i) => (
               <div key={i} className="flex items-center gap-1 bg-white/5 rounded-lg">
                 <button onClick={() => loadFilter(f)} className="px-2.5 py-1 text-[11px] text-white/50 hover:text-white/80 transition-colors">{f.name}</button>
-                <button onClick={() => deleteFilter(i)} className="px-1.5 py-1 text-white/20 hover:text-red-400 text-[10px] transition-colors">✕</button>
+                <button onClick={() => deleteFilter(i)} className="px-1.5 py-1 text-white/20 hover:text-red-400 text-[10px] transition-colors">â</button>
               </div>
             ))}
             {!showSaveInput ? (
@@ -618,7 +618,7 @@ export default function AdminDashboard() {
               <div className="flex items-center gap-1">
                 <input type="text" value={filterNameInput} onChange={(e) => setFilterNameInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && saveFilter()} placeholder={s.filterName} className="bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-[11px] text-white/70 placeholder-white/20 focus:outline-none focus:border-[#F37C05]/50 w-32" autoFocus />
                 <button onClick={saveFilter} className="text-[10px] text-[#F37C05] hover:text-[#F37C05]/80 font-medium">{s.save}</button>
-                <button onClick={() => { setShowSaveInput(false); setFilterNameInput(""); }} className="text-[10px] text-white/30 hover:text-white/60">✕</button>
+                <button onClick={() => { setShowSaveInput(false); setFilterNameInput(""); }} className="text-[10px] text-white/30 hover:text-white/60">â</button>
               </div>
             )}
           </div>
@@ -631,14 +631,14 @@ export default function AdminDashboard() {
               <svg className="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" /></svg>
             </div>
             <span className="text-amber-300 text-xs">
-              <span className="font-semibold">{otSummary.count}</span> {lang === "en" ? "employee(s) with overtime" : "empleado(s) con horas extra"} — <span className="font-semibold">{otSummary.hours}</span> {lang === "en" ? "total OT hours in view" : "horas extra totales a la vista"}
+              <span className="font-semibold">{otSummary.count}</span> {lang === "en" ? "employee(s) with overtime" : "empleado(s) con horas extra"} â <span className="font-semibold">{otSummary.hours}</span> {lang === "en" ? "total OT hours in view" : "horas extra totales a la vista"}
             </span>
           </div>
         )}
 
         {/* Results count */}
         <div className="flex items-center justify-between mb-3">
-          <span className="text-white/30 text-xs">{reports.length} {lang === "en" ? "reports" : "reportes"}{loading ? " …" : ""}</span>
+          <span className="text-white/30 text-xs">{reports.length} {lang === "en" ? "reports" : "reportes"}{loading ? " â¦" : ""}</span>
         </div>
 
         {/* Table */}
@@ -717,7 +717,7 @@ export default function AdminDashboard() {
                     <td className="px-3 py-2.5 text-xs text-white/40 max-w-[150px] truncate">
                       {isEditing ? (
                         <input type="text" value={editData.notes} onChange={(e) => setEditData({ ...editData, notes: e.target.value })} className="bg-white/5 border border-white/10 rounded-lg px-2 py-1 text-xs text-white focus:outline-none focus:border-[#F37C05]/50 w-full" />
-                      ) : r.notes || "—"}
+                      ) : r.notes || "â"}
                     </td>
                     <td className="px-3 py-2.5 text-xs text-white/30 whitespace-nowrap">{formatDateTime(r.submitted_at)}</td>
                     <td className="px-3 py-2.5 whitespace-nowrap">
