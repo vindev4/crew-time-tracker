@@ -51,6 +51,7 @@ const t = {
     showFilters: "Filters",
     hideFilters: "Hide",
     selected: "selected",
+    searchPlaceholder: "Search by name, ID, or location\u2026",
   },
   es: {
     workTickets: "Boletas de Trabajo",
@@ -98,6 +99,7 @@ const t = {
     showFilters: "Filtros",
     hideFilters: "Ocultar",
     selected: "seleccionados",
+    searchPlaceholder: "Buscar por nombre, ID o ubicaci\u00f3n\u2026",
   },
 };
 
@@ -210,6 +212,7 @@ export default function AdminDashboard() {
   const [selectedEmployees, setSelectedEmployees] = useState<string[]>([]);
   const [selectedLocations, setSelectedLocations] = useState<string[]>([]);
   const [overtimeOnly, setOvertimeOnly] = useState(false);
+  const [search, setSearch] = useState("");
   const [filtersOpen, setFiltersOpen] = useState(true);
 
   const [sortCol, setSortCol] = useState("submitted_at");
@@ -316,6 +319,7 @@ export default function AdminDashboard() {
     setSelectedEmployees([]);
     setSelectedLocations([]);
     setOvertimeOnly(false);
+    setSearch("");
   }
 
   function saveFilter() {
@@ -387,9 +391,20 @@ export default function AdminDashboard() {
     } catch {}
   }
 
+  const filteredReports = useMemo(() => {
+    if (!search.trim()) return reports;
+    const q = search.toLowerCase();
+    return reports.filter(
+      (r) =>
+        (r.employee_name || "").toLowerCase().includes(q) ||
+        (r.employee_custom_id || "").toLowerCase().includes(q) ||
+        (r.job_location || "").toLowerCase().includes(q)
+    );
+  }, [reports, search]);
+
   const empSummary = useMemo(() => {
     const map: Record<string, { name: string; hours: number; count: number; weeks: Set<string> }> = {};
-    for (const r of reports) {
+    for (const r of filteredReports) {
       if (!map[r.employee_id]) {
         map[r.employee_id] = { name: r.employee_name, hours: 0, count: 0, weeks: new Set() };
       }
@@ -405,21 +420,21 @@ export default function AdminDashboard() {
         hours: Math.round(v.hours * 100) / 100,
         count: v.count,
         weeklyAvg: v.weeks.size > 0 ? Math.round((v.hours / v.weeks.size) * 100) / 100 : 0,
-        hasOvertime: reports.some((r) => r.employee_id === id && r.is_overtime),
+        hasOvertime: filteredReports.some((r) => r.employee_id === id && r.is_overtime),
       }))
       .sort((a, b) => b.hours - a.hours);
-  }, [reports]);
+  }, [filteredReports]);
 
   const otSummary = useMemo(() => {
-    const otReports = reports.filter((r) => r.is_overtime);
+    const otReports = filteredReports.filter((r) => r.is_overtime);
     const otEmployees = new Set(otReports.map((r) => r.employee_id));
     const totalOtHours = otReports.reduce((s, r) => s + (r.hours_worked || 0), 0);
     return { count: otEmployees.size, hours: Math.round(totalOtHours * 100) / 100 };
-  }, [reports]);
+  }, [filteredReports]);
 
   function exportCSV() {
     const header = "Date,Employee,Employee ID,Start,Stop,Hours,Week Total,Overtime,Job/Location,Notes,Submitted\n";
-    const rows = reports.map((r) =>
+    const rows = filteredReports.map((r) =>
       [
         r.report_date,
         '"' + (r.employee_name || "").replace(/"/g, '""') + '"',
@@ -484,7 +499,7 @@ export default function AdminDashboard() {
           <button onClick={() => setFiltersOpen(!filtersOpen)} className="flex items-center gap-2 text-white/60 text-xs font-medium uppercase tracking-wider">
             <svg className={`w-3 h-3 transition-transform ${filtersOpen ? "rotate-90" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
             {filtersOpen ? s.hideFilters : s.showFilters}
-            {(selectedEmployees.length > 0 || selectedLocations.length > 0 || overtimeOnly || datePreset !== "thisWeek") && (
+            {(selectedEmployees.length > 0 || selectedLocations.length > 0 || overtimeOnly || datePreset !== "thisWeek" || search) && (
               <span className="bg-[#F37C05]/20 text-[#F37C05] px-1.5 py-0.5 rounded text-[10px]">●</span>
             )}
           </button>
@@ -523,6 +538,24 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               )}
+            </div>
+
+            {/* Search */}
+            <div className="flex-shrink-0 w-full sm:w-auto">
+              <label className="block text-white/30 text-[10px] font-medium mb-1.5 uppercase tracking-wider">&nbsp;</label>
+              <div className="relative">
+                <svg className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                <input
+                  type="text"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  placeholder={s.searchPlaceholder}
+                  className="bg-white/5 border border-white/10 rounded-lg pl-8 pr-3 py-1.5 text-xs text-white/80 placeholder-white/25 focus:outline-none focus:border-[#F37C05]/50 w-full sm:w-56 transition-colors"
+                />
+                {search && (
+                  <button onClick={() => setSearch("")} className="absolute right-2 top-1/2 -translate-y-1/2 text-white/30 hover:text-white/60 text-xs">{"\u2715"}</button>
+                )}
+              </div>
             </div>
 
             {/* Employee Multi-Select */}
@@ -638,7 +671,7 @@ export default function AdminDashboard() {
 
         {/* Results count */}
         <div className="flex items-center justify-between mb-3">
-          <span className="text-white/30 text-xs">{reports.length} {lang === "en" ? "reports" : "reportes"}{loading ? " …" : ""}</span>
+          <span className="text-white/30 text-xs">{filteredReports.length} {lang === "en" ? "reports" : "reportes"}{loading ? " \u2026" : ""}</span>
         </div>
 
         {/* Table */}
@@ -665,10 +698,10 @@ export default function AdminDashboard() {
               </tr>
             </thead>
             <tbody>
-              {reports.length === 0 && !loading && (
+              {filteredReports.length === 0 && !loading && (
                 <tr><td colSpan={10} className="text-center py-10 text-white/30 text-sm">{s.noReports}</td></tr>
               )}
-              {reports.map((r) => {
+              {filteredReports.map((r) => {
                 const isEditing = editingId === r.id;
                 const otRow = r.is_overtime;
                 return (
