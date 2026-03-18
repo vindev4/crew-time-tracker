@@ -485,7 +485,7 @@ export default function AdminDashboard() {
             <svg className={`w-3 h-3 transition-transform ${filtersOpen ? "rotate-90" : ""}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
             {filtersOpen ? s.hideFilters : s.showFilters}
             {(selectedEmployees.length > 0 || selectedLocations.length > 0 || overtimeOnly || datePreset !== "thisWeek") && (
-              <span className="bg-[#F37C05]/20 text-[#F37C05] px-1.5 py-0.5 rounded text-[10px]">‚óœ</span>
+              <span className="bg-[#F37C05]/20 text-[#F37C05] px-1.5 py-0.5 rounded text-[10px]">‚óè</span>
             )}
           </button>
         </div>
